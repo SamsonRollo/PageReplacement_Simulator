@@ -1,0 +1,10 @@
+Generating random input
+    call menu controller 
+        setThruRandom() method for random generation of inputs
+        setThruUserInput() method for user inputs
+        setThruFileInput() method for file upload
+    will return RandomInput object containing the Frame and Reference length and the reference string
+    
+    From the returned object; use getReferenceLength() to get reference length of String type
+                              use getReferenceString() to get reference string  of String type
+                              use getFrameLength() to get the frame length of String typegenerate
