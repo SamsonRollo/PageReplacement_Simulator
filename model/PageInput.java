@@ -1,6 +1,7 @@
 package model;
 
 import java.lang.Math;
+import java.util.Arrays;
 import java.io.*;
 import exceptions.*;
 
@@ -25,7 +26,14 @@ public class PageInput{
         generateRefValues();
     }
 
-    public void setValues(int refLen, int frameLen, String refValues) throws InvalidInputException{
+    public void setValues(String refLenStr, String frameLenStr, String refValues) throws InvalidInputException{
+        int refLen, frameLen;
+        try{
+            refLen = Integer.parseInt(refLenStr);
+            frameLen = Integer.parseInt(frameLenStr);
+        }catch(NumberFormatException nfx){
+            throw new InvalidInputException("Invalid Frame length or reference length.");
+        }
         if(refLen>MAX_REF_LEN || refLen<MIN_REF_LEN)
             throw new InvalidInputException("Reference Length out of range! Range: "+MIN_REF_LEN+"-"+MAX_REF_LEN);
         if(frameLen>MAX_FRAME_LEN || frameLen<MIN_FRAME_LEN)
@@ -48,8 +56,8 @@ public class PageInput{
     }
 
     public void getFromFileInput(File file) throws Exception{
-        String refString;
-        int frameLen;
+        String refString = "";
+        String frameLen = "";
         try{
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
@@ -60,16 +68,17 @@ public class PageInput{
                     refString = line.split(":")[1]; //unsafe
                 if(line.startsWith("framesize:")){
                     try{
-                        frameLen = Integer.parseInt(line.split(":")[1]) //unsafe
+                        frameLen = line.split(":")[1]; //unsafe
                     }catch(NumberFormatException nex){
                         throw new InvalidInputException("Frame length not a number!");
                     }
                 }
             }
+            reader.close();
+            setValues(refLenFunc(refString), frameLen, refString);
         }catch(InvalidInputException iie){
             throw new InvalidInputException("Cannot access input file!");
         }
-        setValues(refLenFunc(refString), frameLen, refString);
     }
 
     public String getReferenceLength(){
@@ -81,11 +90,12 @@ public class PageInput{
     }
 
     public String getReferenceString(){
-        return String.join(", ", refValArr);
+        String values = Arrays.toString(refValArr);
+        return values.substring(1, values.length()-1);
     }
     
-    private int refLenFunc(String refString){
-        return refString.split(",").length;
+    private String refLenFunc(String refString){
+        return String.valueOf(refString.split(",").length);
     }
 
     private void generateRefValues(){
