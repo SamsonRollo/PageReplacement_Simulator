@@ -2,16 +2,15 @@ package algorithms;
 
 import model.PageInput;
 
-public class Fifo {
+public class Clock {
     private int[] values;
     private int frameLen;
     private int refLen;
     public String[][] fifoFrame;
     private int currentReference;
     private int currentFrame;
-    public int pageFaults;
 
-    public Fifo(PageInput input){
+    public Clock(PageInput input){
         setValues(input);
     }
 
@@ -22,14 +21,12 @@ public class Fifo {
         fifoFrame = new String[refLen][frameLen];
         currentReference = 0;
         currentFrame = 0;
-        pageFaults = 0;
     }
 
     public void move(){
         if(currentReference==0){
             fifoFrame[0][0]= String.valueOf(values[0]);
             this.currentFrame++;
-            this.pageFaults++;
         }else{
             insertFrameAtReference(currentReference, currentFrame, fifoFrame);
         }
@@ -43,7 +40,6 @@ public class Fifo {
             if(!exist && i==currentFrame){
                 fifoFrame[currentReference][i] = String.valueOf(values[currentReference]);
                 this.currentFrame = (this.currentFrame+1)%frameLen;
-                this.pageFaults++;
             }else{
                 fifoFrame[currentReference][i] = fifoFrame[prevRef][i];
             }
@@ -63,9 +59,5 @@ public class Fifo {
 
     public String[][] getFifoFrame(){
         return fifoFrame;
-    }
-
-    public int getPageFaults(){
-        return pageFaults;
     }
 }
