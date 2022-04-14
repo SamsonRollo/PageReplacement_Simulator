@@ -5,6 +5,7 @@ Generating random input
         setThruFileInput() method for file upload
     will return RandomInput object containing the Frame and Reference length and the reference string
     
-    From the returned object; use getReferenceLength() to get reference length of String type
+    From the returned object; use getReferenceLength() to get reference length of int type
                               use getReferenceString() to get reference string  of String type
-                              use getFrameLength() to get the frame length of String typegenerate
+                              use getFrameLength() to get the frame length of int type
+                              use getReferenceValues() t0 get the values of int[] type

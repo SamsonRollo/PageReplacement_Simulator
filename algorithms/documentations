@@ -1,0 +1,5 @@
+Fifo
+    initialize by Fifo(PageInput)
+    move by move()
+    retrieve the frames by getFifoFrame(), a String[][] type
+        rows are the refereces and columns are the frames

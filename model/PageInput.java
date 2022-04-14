@@ -81,17 +81,21 @@ public class PageInput{
         }
     }
 
-    public String getReferenceLength(){
-        return String.valueOf(refLen);
+    public int getReferenceLength(){
+        return refLen;
     }
     
-    public String getFrameLength(){
-        return String.valueOf(frameLen);
+    public int getFrameLength(){
+        return frameLen;
     }
 
     public String getReferenceString(){
         String values = Arrays.toString(refValArr);
         return values.substring(1, values.length()-1);
+    }
+
+    public int[] getReferenceValues(){
+        return refValArr;
     }
     
     private String refLenFunc(String refString){
