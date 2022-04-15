@@ -2,7 +2,7 @@ package algorithms;
 
 import model.PageInput;
 
-public class Fifo {
+public class Clock {
     private int[] values;
     private int frameLen;
     private int refLen;
@@ -10,8 +10,9 @@ public class Fifo {
     private int currentReference;
     private int currentFrame;
     public int pageFaults;
+    private boolean[] secondChance;
 
-    public Fifo(PageInput input){
+    public Clock(PageInput input){
         setValues(input);
     }
 
@@ -23,6 +24,7 @@ public class Fifo {
         currentReference = 0;
         currentFrame = 0;
         pageFaults = 0;
+        secondChance = new boolean[frameLen];
     }
 
     public void move(){
@@ -41,22 +43,37 @@ public class Fifo {
         boolean exist = alreadyExistInFrame(currentReference, frames);
         for(int i=0; i<frameLen; i++){
             if(!exist && i==currentFrame){
-                frames[currentReference][i] = String.valueOf(values[currentReference]);
-                this.currentFrame = (this.currentFrame+1)%frameLen;
-                this.pageFaults++;
-            }else{
+            		if(secondChance[i]){
+            			secondChance[i]=false;
+            			this.currentFrame = (this.currentFrame+1)%frameLen;
+            			currentFrame = this.currentFrame;
+            			frames[currentReference][i] = frames[prevRef][i];
+                    		if(i+1==frameLen)
+                        		i=-1;
+            		}else{
+            			pageFault(currentReference, frames, i);
+            		}
+            }else{ //if current value exists
                 frames[currentReference][i] = frames[prevRef][i];
             }
         }
     } 
+
+    private void pageFault(int currentReference, String[][] frames, int i){
+        frames[currentReference][i] = String.valueOf(values[currentReference]);
+        this.currentFrame = (this.currentFrame+1)%frameLen;
+        this.pageFaults++;
+    }
 
     private boolean alreadyExistInFrame(int currentReference, String[][] frames){
         int prevRef = currentReference-1;
         for(int i=0; i<frameLen; i++){
             if(frames[prevRef][i]==null) //safety catch for null
                 break;
-            if(Integer.parseInt(frames[prevRef][i])==values[currentReference])
+            if(Integer.parseInt(frames[prevRef][i])==values[currentReference]){
+                secondChance[i] = true;
                 return true;
+            }
         }
         return false;
     }

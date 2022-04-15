@@ -1,5 +1,6 @@
 Fifo
     initialize by Fifo(PageInput)
     move by move()
-    retrieve the frames by getFifoFrame(), a String[][] type
+    retrieve the frames by getFrames(), a String[][] type
         rows are the refereces and columns are the frames
+    retrieve the number of page fault by getPageFaults(), an int type
