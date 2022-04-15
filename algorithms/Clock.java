@@ -2,43 +2,20 @@ package algorithms;
 
 import model.PageInput;
 
-public class Clock {
-    private int[] values;
-    private int frameLen;
-    private int refLen;
-    public String[][] frames;
-    private int currentReference;
-    private int currentFrame;
-    public int pageFaults;
+public class Clock extends PageReplacementAlgorithm{
     private boolean[] secondChance;
 
     public Clock(PageInput input){
         setValues(input);
+        setAddValues();
     }
 
-    public void setValues(PageInput input){
-        values = input.getReferenceValues();
-        frameLen = input.getFrameLength();
-        refLen = input.getReferenceLength();
-        frames = new String[refLen][frameLen];
-        currentReference = 0;
-        currentFrame = 0;
-        pageFaults = 0;
+    private void setAddValues(){
         secondChance = new boolean[frameLen];
     }
 
-    public void move(){
-        if(currentReference==0){
-            frames[0][0]= String.valueOf(values[0]);
-            this.currentFrame++;
-            this.pageFaults++;
-        }else{
-            insertFrameAtReference(currentReference, currentFrame, frames);
-        }
-        this.currentReference++;
-    }
-
-    private void insertFrameAtReference(int currentReference, int currentFrame, String[][] frames){
+    @Override
+    protected void insertFrameAtReference(int currentReference, int currentFrame, String[][] frames){
         int prevRef = currentReference-1;
         boolean exist = alreadyExistInFrame(currentReference, frames);
         for(int i=0; i<frameLen; i++){
@@ -59,13 +36,8 @@ public class Clock {
         }
     } 
 
-    private void pageFault(int currentReference, String[][] frames, int i){
-        frames[currentReference][i] = String.valueOf(values[currentReference]);
-        this.currentFrame = (this.currentFrame+1)%frameLen;
-        this.pageFaults++;
-    }
-
-    private boolean alreadyExistInFrame(int currentReference, String[][] frames){
+    @Override
+    protected boolean alreadyExistInFrame(int currentReference, String[][] frames){
         int prevRef = currentReference-1;
         for(int i=0; i<frameLen; i++){
             if(frames[prevRef][i]==null) //safety catch for null
@@ -76,13 +48,5 @@ public class Clock {
             }
         }
         return false;
-    }
-
-    public String[][] getFrames(){
-        return frames;
-    }
-
-    public int getPageFaults(){
-        return pageFaults;
     }
 }
