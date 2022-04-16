@@ -19,7 +19,7 @@ public class Clock extends PageReplacementAlgorithm{
         int prevRef = currentReference-1;
         boolean exist = alreadyExistInFrame(currentReference, frames);
         for(int i=0; i<frameLen; i++){
-            if(!exist && i==currentFrame){
+            if(!exist && i==(currentFrame+1)%frameLen){
             		if(secondChance[i]){
             			secondChance[i]=false;
             			this.currentFrame = (this.currentFrame+1)%frameLen;
