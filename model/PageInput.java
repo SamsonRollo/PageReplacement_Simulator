@@ -15,14 +15,14 @@ public class PageInput{
 
     public int frameLen = 0;
     public int refLen = 0;
-    public int[] refValArr;
+    public String[] refValArr;
 
     public PageInput(){}
 
     public void generateRandomInput(){
         frameLen = (int)Math.random()*(MAX_FRAME_LEN - MIN_FRAME_LEN + 1) + MIN_FRAME_LEN;
         refLen = (int)Math.random()*(MAX_REF_LEN - MIN_REF_LEN +1) + MIN_REF_LEN;
-        refValArr = new int[refLen];
+        refValArr = new String[refLen];
         generateRefValues();
     }
 
@@ -45,10 +45,11 @@ public class PageInput{
         String[] tempRefVal = refValues.replaceAll(" ","").split(",");
         if(tempRefVal.length != refLen)
             throw new InvalidInputException("Number of Reference values not equal to Refence length.");
-        refValArr = new int[refLen];
+        refValArr = new String[refLen];
         for(int i = 0; i<refLen; i++){
             try{
-                refValArr[i] = Integer.parseInt(tempRefVal[i]);
+                Integer.parseInt(tempRefVal[i]);
+                refValArr[i] = tempRefVal[i];
             }catch(NumberFormatException ex){
                 throw new InvalidInputException("Some Reference values are invalid.");
             }
@@ -94,7 +95,7 @@ public class PageInput{
         return values.substring(1, values.length()-1);
     }
 
-    public int[] getReferenceValues(){
+    public String[] getReferenceValues(){
         return refValArr;
     }
     
@@ -104,7 +105,7 @@ public class PageInput{
 
     private void generateRefValues(){
         for(int i=0; i<refLen; i++){
-            refValArr[i] = (int)Math.random()*(MAX_REF_VAL - MIN_REF_VAL + 1) + MIN_REF_VAL;
+            refValArr[i] = String.valueOf((int)Math.random()*(MAX_REF_VAL - MIN_REF_VAL + 1) + MIN_REF_VAL);
         }
     }
 }

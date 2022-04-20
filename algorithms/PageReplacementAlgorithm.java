@@ -3,7 +3,7 @@ package algorithms;
 import model.PageInput;
 
 abstract class PageReplacementAlgorithm {
-    protected int[] values;
+    protected String[] values;
     protected int frameLen;
     protected int refLen;
     public int currentReference;
@@ -46,7 +46,7 @@ abstract class PageReplacementAlgorithm {
         for(int i=0; i<frameLen; i++){
             if(frames[prevRef][i]==null) //safety catch for null
                 break;
-            if(Integer.parseInt(frames[prevRef][i])==values[currentReference])
+            if((frames[prevRef][i]).equals(values[currentReference]))
                 return true;
         }
         return false;
@@ -77,12 +77,16 @@ abstract class PageReplacementAlgorithm {
     }
 
     public String[] getCurrentFrames(){
-       String[] ret = new String[frameLen];
-       if(currentReference>0){
-            for(int i=0; i<frameLen; i++)
-                ret[i] = frames[currentReference-1][i];
-        }
-        return ret;
+        return privGetCurrentFrames(this.currentReference, this.frameLen, this.frames);
+    }
+
+    protected String[] privGetCurrentFrames(int reference, int frameLen, String[][] frames){
+        String[] ret = new String[frameLen];
+        if(reference>0){
+             for(int i=0; i<frameLen; i++)
+                 ret[i] = frames[reference][i];
+         }
+         return ret; 
     }
 
     abstract protected void insertFrameAtReference(int currentReference, int currentFrame, String[][] frames);

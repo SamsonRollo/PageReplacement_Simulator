@@ -48,7 +48,7 @@ public class Clock extends PageReplacementAlgorithm{
         for(int i=0; i<frameLen; i++){
             if(frames[prevRef][i]==null) //safety catch for null
                 break;
-            if(Integer.parseInt(frames[prevRef][i])==values[currentReference]){
+            if((frames[prevRef][i]).equals(values[currentReference])){
                 secondChance[i] = true;
                 return true;
             }
