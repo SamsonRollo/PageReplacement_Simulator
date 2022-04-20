@@ -20,10 +20,12 @@ public class LRU extends PageReplacementAlgorithm{
             currentFrameArr.add(0, String.valueOf(values[prevRef]));
 	    
         if(currentFrameArr.contains(currentVal)){
+            updateHit(true);
             rearrangeFrame(currentFrameArr, currentVal, currentVal); ///if full and not
             frames = produceNextFrame(frames, prevRef, currentReference, false, -1, currentVal);
             lRUPageFault(false, getIndexInFrame(frames, currentVal, currentReference));
         }else{
+            updateHit(false);
         	int idx = -1;
             if(currentFrameArr.size()==frameLen)
             	idx= getIndexInFrame(frames, getLRUVal(currentFrameArr), prevRef);

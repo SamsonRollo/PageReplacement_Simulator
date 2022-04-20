@@ -9,6 +9,7 @@ abstract class PageReplacementAlgorithm {
     public int currentReference;
     public int currentFrame;
     public int pageFaults;
+    public boolean hit = false;
     public String[][] frames;
 
     public void setValues(PageInput input){
@@ -24,6 +25,7 @@ abstract class PageReplacementAlgorithm {
     public void move(){
         if(currentReference==0){
             frames[0][0]= String.valueOf(values[0]);
+            updateHit(false);
             this.currentFrame++;
             this.pageFaults++;
         }else{
@@ -50,20 +52,28 @@ abstract class PageReplacementAlgorithm {
         return false;
     }
 
+    public void updateHit(boolean hit){
+        this.hit = hit;
+    }
+
+    public boolean isHit(){
+        return this.hit;
+    }
+
     public String[][] getFrames(){
-        return frames;
+        return this.frames;
     }
 
     public int getPageFaults(){
-        return pageFaults;
+        return this.pageFaults;
     }
 
     public int getCurrentRefernce(){
-        return currentReference;
+        return this.currentReference;
     }
 
     public int getCurrentFrame(){
-        return currentFrame;
+        return this.currentFrame;
     }
 
     public String[] getCurrentFrames(){

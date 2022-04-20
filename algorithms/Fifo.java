@@ -20,5 +20,11 @@ public class Fifo extends PageReplacementAlgorithm{
                 frames[currentReference][i] = frames[prevRef][i];
             }
         }
+
+        if(exist){
+            updateHit(true);
+        }else{
+            updateHit(false);
+        }
     } 
 }
