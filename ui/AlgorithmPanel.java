@@ -33,9 +33,9 @@ public class AlgorithmPanel extends JPanel{
         try{
             page = ImageIO.read(this.getClass().getClassLoader().getResource(COVER_PATH));
         }catch(IOException ioe){}
-        loadArrows();
         loadPageTools();
-
+        //load visual
+        loadArrows();
     }
 
     private JPanel loadPageTools(){
@@ -93,8 +93,28 @@ public class AlgorithmPanel extends JPanel{
     }
 
     private void loadArrows(){
-        PRASButton left = new PRASButton();
-        PRASButton right = new PRASButton(); 
+        PRASButton left = new PRASButton(2, 265, 45, 45);
+        PRASButton right = new PRASButton(803, 265, 45, 45);
+        
+        left.setIcons("src/unselected/unselect_left.png",
+                    "src/selected/select_left.png",
+                    "LEFT");
+        right.setIcons("src/unselected/unselect_right.png",
+                    "src/selected/select_right.png",
+                    "RIGHT");
+        left.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                mainClass.getPageController().clickedLeft();
+            }
+        });
+        right.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                mainClass.getPageController().clickedRight();
+            }
+        });
+
+        add(left);
+        add(right);
     }
 
     public String getPanelName(){
