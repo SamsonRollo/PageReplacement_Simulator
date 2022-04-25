@@ -4,11 +4,10 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import controller.MenuController;
+import controller.PageController;
 
 public class MainClass extends JFrame implements ActionListener{
-	private MenuController menuController;
-	//private PageController pageController;
+	private PageController pageController;
 	private JPanel activePanel; //either main menu or ative algorithm
 	private MainMenuPanel mainMenuPanel;
 	private AlgorithmPanel algorithmPanel;
@@ -18,50 +17,49 @@ public class MainClass extends JFrame implements ActionListener{
 	private static final int PAGE_WIDTH = 800;
 	private static final int PAGE_HEIGHT = 600;
 
-    public MainClass(){
-		setSize(COVER_WIDTH, COVER_HEIGHT);
+	public MainClass(){
 		setTitle("PRAS");
-		setLocationRelativeTo(null);
 		setUndecorated(true);
 		setResizable(false);
-		getContentPane().setLayout(null);
+		getContentPane().setLayout(new FlowLayout());
 		loadMainMenu();
+		pack();
+		setLocationRelativeTo(null);		
 		setVisible(true);
-		loadPages();		
+		loadPages();	
 	}
 
 	private void loadMainMenu(){
-		menuController = new MenuController();
 		mainMenuPanel = new MainMenuPanel(new Dimension(COVER_WIDTH, COVER_HEIGHT), this);
 		card = new CardLayout();
 		activePanel = new JPanel(card);
-		activePanel.setSize(COVER_WIDTH, COVER_HEIGHT);
-		activePanel.add(mainMenuPanel, "mmPanel");
+		activePanel.setPreferredSize(mainMenuPanel.getPreferredSize());
+		activePanel.add(mainMenuPanel, mainMenuPanel.getPanelName());
 		getContentPane().add(activePanel);
 	}
 
 	private void loadPages(){
 		algorithmPanel = new AlgorithmPanel(new Dimension(PAGE_WIDTH, PAGE_HEIGHT), this);
-		algorithmPanel.setSize(PAGE_WIDTH, PAGE_HEIGHT);
-		activePanel.add(algorithmPanel, "alPanel");
+		activePanel.add(algorithmPanel, algorithmPanel.getPanelName());
 	}
 
 	public void openPage(){
-		loadActive("alPanel", PAGE_WIDTH, PAGE_HEIGHT);
+		loadActive(algorithmPanel.getPanelName(), algorithmPanel);
 	}
 
 	public void openMenu(){
-		loadActive("mmPanel", COVER_WIDTH, COVER_HEIGHT);
+		loadActive(mainMenuPanel.getPanelName(), mainMenuPanel);
 	}
 	
-	public void loadActive(String active, int width, int height){
-		setSize(width, height);
-		setLocationRelativeTo(null);
-		activePanel.setSize(width, height);
+	public void loadActive(String active, JPanel panel){
+		activePanel.setPreferredSize(panel.getPreferredSize());
 		card.show(activePanel, active);
-		revalidate();
-		repaint();
-		activePanel.updateUI();
+		pack();
+		setLocationRelativeTo(null);
+	}
+
+	public PageController getPageController(){
+		return pageController;
 	}
 
     @Override

@@ -14,11 +14,13 @@ public class MainMenuPanel extends JPanel{
     private BufferedImage cover;
     private static final String COVER_PATH = "src/cover.png";
     private MainClass mainClass;
+    public final String PANEL_NAME = "mmPanel";
 
     public MainMenuPanel(Dimension d, MainClass mainClass){
     	this.mainClass = mainClass;
         setLayout(null);
-        setSize((int)d.getWidth(), (int)d.getHeight());
+        setSize(d);
+        setPreferredSize(d);
         drawMenu();
     }
 
@@ -62,8 +64,11 @@ public class MainMenuPanel extends JPanel{
 
         add(openButton);
         add(aboutButton);
-        add(exitButton);
-        
+        add(exitButton);   
+    }
+
+    public String getPanelName(){
+        return PANEL_NAME;
     }
 
     @Override

@@ -1,9 +1,10 @@
 package controller;
 
 import model.*;
+import algorithms.Algorithm;
 import exceptions.*;
 
-public class MenuController{
+public class PageController{
 
     public PageInput setThruRandom(){ //create randomInput obejct
         PageInput input = new PageInput();
@@ -31,11 +32,23 @@ public class MenuController{
         return input;
     }
 
-    public void runPageReplacement(){
+    public void startAlgorithm(Algorithm algorithm){
         //use thread
     }
 
+    public void stopAlgorithm(){
+        //
+    } 
+
     public void saveOutput(){
         //save the graphical output of pr
+    }
+
+    public void clickedRight(){
+
+    }
+
+    public void clickedLeft(){
+
     }
 }
