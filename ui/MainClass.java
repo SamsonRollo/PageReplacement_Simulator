@@ -3,10 +3,12 @@ package ui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 import controller.PageController;
 
-public class MainClass extends JFrame implements ActionListener{
+public class MainClass extends JFrame implements ActionListener{ //rename to PRAS
 	private PageController pageController;
 	private JPanel activePanel; //either main menu or ative algorithm
 	private MainMenuPanel mainMenuPanel;
@@ -16,8 +18,10 @@ public class MainClass extends JFrame implements ActionListener{
 	private static final int COVER_HEIGHT = 600;
 	private static final int PAGE_WIDTH = 800;
 	private static final int PAGE_HEIGHT = 600;
+	private final String ICON_PATH = "src/tray_icon.png";
 
 	public MainClass(){
+		setTrayIcon();
 		setTitle("PRAS");
 		setUndecorated(true);
 		setResizable(false);
@@ -60,6 +64,12 @@ public class MainClass extends JFrame implements ActionListener{
 
 	public PageController getPageController(){
 		return pageController;
+	}
+
+	private void setTrayIcon(){
+		try{
+			setIconImage(ImageIO.read(this.getClass().getClassLoader().getResource(ICON_PATH)));
+		}catch(IOException ioe){}
 	}
 
     @Override

@@ -33,8 +33,8 @@ public class AlgorithmPanel extends JPanel{
         try{
             page = ImageIO.read(this.getClass().getClassLoader().getResource(COVER_PATH));
         }catch(IOException ioe){}
-        loadPageTools();
-        //load visual
+        add(loadPageTools());
+        add(loadVisualPanel());
         loadArrows();
     }
 
@@ -43,7 +43,6 @@ public class AlgorithmPanel extends JPanel{
         
         pageTools.setBounds(32,16,385,552); //specific measurement from the src
         pageTools.setOpaque(false);
-        pageTools.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.green));
 
         PRASButton startButton = new PRASButton(46, 405, 125, 34);
         PRASButton stopButton = new PRASButton(46, 454, 125, 34);
@@ -93,8 +92,8 @@ public class AlgorithmPanel extends JPanel{
     }
 
     private void loadArrows(){
-        PRASButton left = new PRASButton(2, 265, 45, 45);
-        PRASButton right = new PRASButton(803, 265, 45, 45);
+        PRASButton left = new PRASButton(2, 0, 45, 45);
+        PRASButton right = new PRASButton(803, 0, 45, 45);
         
         left.setIcons("src/unselected/unselect_left.png",
                     "src/selected/select_left.png",
@@ -117,6 +116,12 @@ public class AlgorithmPanel extends JPanel{
         add(right);
     }
 
+    private JPanel loadVisualPanel(){
+        VisualPanel visualPanel = new VisualPanel(421, 16, 385, 552);
+        ////
+        return visualPanel;
+    }
+    
     public String getPanelName(){
         return PANEL_NAME;
     }
