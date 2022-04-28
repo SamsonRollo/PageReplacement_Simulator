@@ -1,13 +1,11 @@
 package ui;
 
 import javax.swing.JPanel;
-import javax.imageio.ImageIO;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 
 public class MainMenuPanel extends JPanel{
@@ -25,9 +23,8 @@ public class MainMenuPanel extends JPanel{
     }
 
     private void drawMenu(){
-        try{
-            cover = ImageIO.read(this.getClass().getClassLoader().getResource(COVER_PATH));
-        }catch(IOException ioe){}
+        ImageLoader il = new ImageLoader(COVER_PATH, "cover");
+        cover = il.getBuffImage();
         loadMenuTools();
     }
 

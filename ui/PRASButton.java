@@ -1,9 +1,7 @@
 package ui;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import java.io.IOException;
 
 public class PRASButton extends JButton{
  
@@ -22,12 +20,13 @@ public class PRASButton extends JButton{
     }
 
     public void setIcons(String selectAddress, String unselectAddress, String alt){
-        try{
-		    setIcon(new ImageIcon(ImageIO.read(this.getClass().getClassLoader().getResource(unselectAddress))));
-		    setRolloverIcon(new ImageIcon(ImageIO.read(this.getClass().getClassLoader().getResource(selectAddress))));
-		}catch(IOException e){
-		    setText(alt);
-		};
+        ImageLoader imgLoader = new ImageLoader(selectAddress, alt);
+        setIcon(new ImageIcon(imgLoader.getBuffImage()));
+        imgLoader.reloadImage(unselectAddress, alt);
+        setRolloverIcon(new ImageIcon(imgLoader.getBuffImage()));
+
+        if(imgLoader.isNull())
+            setText(alt);
     }
 
     public JButton getButton(){

@@ -3,8 +3,6 @@ package ui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 import controller.PageController;
 
@@ -27,13 +25,14 @@ public class MainClass extends JFrame implements ActionListener{ //rename to PRA
 		setResizable(false);
 		getContentPane().setLayout(new FlowLayout());
 		loadMainMenu();
+		loadPages();
 		pack();
 		setLocationRelativeTo(null);		
 		setVisible(true);
-		loadPages();	
 	}
 
 	private void loadMainMenu(){
+		pageController = new PageController();
 		mainMenuPanel = new MainMenuPanel(new Dimension(COVER_WIDTH, COVER_HEIGHT), this);
 		card = new CardLayout();
 		activePanel = new JPanel(card);
@@ -67,9 +66,8 @@ public class MainClass extends JFrame implements ActionListener{ //rename to PRA
 	}
 
 	private void setTrayIcon(){
-		try{
-			setIconImage(ImageIO.read(this.getClass().getClassLoader().getResource(ICON_PATH)));
-		}catch(IOException ioe){}
+		ImageLoader il = new ImageLoader(ICON_PATH, "icon");
+        setIconImage(il.getBuffImage());
 	}
 
     @Override

@@ -5,15 +5,16 @@ import algorithms.Algorithm;
 import exceptions.*;
 
 public class PageController{
+    PageInput input;
 
     public PageInput setThruRandom(){ //create randomInput obejct
-        PageInput input = new PageInput();
+        input = new PageInput();
         input.generateRandomInput();
         return input;
     }
 
     public PageInput setThruUserInput(String refLen, String frameLen, String refValues){
-        PageInput input = new PageInput();
+        input = new PageInput();
         try{
             input.setValues(refLen, frameLen, refValues);
         }catch(InvalidInputException iie){
@@ -23,7 +24,7 @@ public class PageController{
     }
 
     public PageInput setThruFileInput(java.io.File file) throws Exception{
-        PageInput input = new PageInput();
+        input = new PageInput();
         try{
             input.getFromFileInput(file);
         }catch(InvalidInputException iie){
@@ -50,5 +51,9 @@ public class PageController{
 
     public void clickedLeft(){
 
+    }
+
+    public PageInput getPageInput(){
+        return input;
     }
 }

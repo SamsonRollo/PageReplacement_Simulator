@@ -4,25 +4,30 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.io.IOException;
 import java.awt.Dimension;
+import java.awt.Font;
 
 public class VisualPanel extends JPanel{
-    public JPanel outputPanel;
-    public JPanel valuesPanel;
+    private MainClass mainClass;
+    public  JPanel outputPanel, valuesPanel;
     private BufferedImage execImg;
+    private Font font;
+    private ImageLoader imgLoader;
 
-    public VisualPanel(int x, int y, int w, int h){
+    public VisualPanel(MainClass mainClass, int x, int y, int w, int h){
+        imgLoader = new ImageLoader();
+    	this.mainClass = mainClass;
     	setLayout(null);
         setBounds(x, y, w, h);
         setOpaque(false);
+        font  = new Font("sans_serif", Font.BOLD, 17);
         add(loadValuePanel());
         add(loadFramePanel());
     }
 
     public JPanel loadValuePanel(){
-        execImg = loadImage("src/execution_values.png");
+        imgLoader.reloadImage("src/execution_values.png", "ex");
+        execImg = imgLoader.getBuffImage();
         //panel to be saved, it contains the frames and and everything.
        //add outputPanel to a JScrollPane to expand the coverage if we have a longer reference string
         // outputPanel must append the reference string, number of frames, number of page fault, number of hits, number of misses if the user chose to save the output
@@ -34,9 +39,8 @@ public class VisualPanel extends JPanel{
                 public void paintComponent(Graphics g){
                    super.paintComponent(g);
                    g.drawImage(execImg, 0, 0, this);
-                    //select a font
-                    //select font size
-                   //g.drawString("REFERENCE STRING", 0,0 );
+                   g.setFont(font);
+                   g.drawString("20", 0,0 );
                    updateUI();
                 }   
         };
@@ -63,13 +67,5 @@ public class VisualPanel extends JPanel{
 	jspDraw.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.cyan));
 	jspDraw.setBounds(0,140,395, 400); 
     	return jspDraw;
-    }
-
-    private BufferedImage loadImage(String source){
-        BufferedImage img = null;
-        try{
-            img = ImageIO.read(this.getClass().getClassLoader().getResource(source));
-        }catch(IOException ioe){}
-        return img;
     }
 }
