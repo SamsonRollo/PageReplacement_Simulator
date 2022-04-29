@@ -20,8 +20,8 @@ public class PageInput{
     public PageInput(){}
 
     public void generateRandomInput(){
-        frameLen = (int)Math.random()*(MAX_FRAME_LEN - MIN_FRAME_LEN + 1) + MIN_FRAME_LEN;
-        refLen = (int)Math.random()*(MAX_REF_LEN - MIN_REF_LEN +1) + MIN_REF_LEN;
+        frameLen = (int)Math.floor(Math.random()*(MAX_FRAME_LEN - MIN_FRAME_LEN + 1) + MIN_FRAME_LEN);
+        refLen = (int)Math.floor(Math.random()*(MAX_REF_LEN - MIN_REF_LEN +1) + MIN_REF_LEN);
         refValArr = new String[refLen];
         generateRefValues();
     }
@@ -59,6 +59,7 @@ public class PageInput{
     public void getFromFileInput(File file) throws Exception{
         String refString = "";
         String frameLen = "";
+        
         try{
             BufferedReader reader = new BufferedReader(new FileReader(file));
             String line;
@@ -105,7 +106,7 @@ public class PageInput{
 
     private void generateRefValues(){
         for(int i=0; i<refLen; i++){
-            refValArr[i] = String.valueOf((int)Math.random()*(MAX_REF_VAL - MIN_REF_VAL + 1) + MIN_REF_VAL);
+            refValArr[i] = String.valueOf((int)Math.floor(Math.random()*(MAX_REF_VAL - MIN_REF_VAL + 1) + MIN_REF_VAL));
         }
     }
 }

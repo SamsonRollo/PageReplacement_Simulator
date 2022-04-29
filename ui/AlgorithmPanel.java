@@ -3,6 +3,7 @@ package ui;
 import javax.swing.JPanel;
 import javax.swing.ButtonGroup;
 import javax.swing.AbstractButton;
+import javax.swing.JTextField;
 import java.util.Enumeration;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
@@ -10,13 +11,13 @@ import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import controller.PageController;
-import algorithms.Algorithm;  
+import algorithms.Algorithm;
+import model.PageInput;
 
 public class AlgorithmPanel extends JPanel{
     private static final String PAGE_PATH = "src/page.png";
-    public final String PANEL_NAME = "alPanel";
     private MainClass mainClass;
+    public final String PANEL_NAME = "alPanel";
     private Algorithm currentAlgorithm;
     private JPanel aboutPanel;
     private ImageLoader imgLoader;
@@ -49,7 +50,10 @@ public class AlgorithmPanel extends JPanel{
     	randomRadio = new PRASRadioButton(58, 322, 100, 27);
     	userRadio = new PRASRadioButton(168, 322, 120, 27);
     	fileRadio = new PRASRadioButton(298, 322, 100, 27);
-    	loadButton = new PRASButton(58, 382, 100, 27);
+    	loadButton = new PRASButton(58, 387, 100, 27);
+    	userInputText = new JTextField();
+    	userInputText.setBounds(58, 353, 335, 30);
+    	userInputText.setEnabled(false);
     	randomRadio.setSelected(true);
     	
     	randomRadio.setIcons("src/unselected/unselect_random.png",
@@ -74,8 +78,16 @@ public class AlgorithmPanel extends JPanel{
                 			name = button.getName();
                 			break;
             			}
-        			}
-        			System.out.println(name); //
+        		}
+                if(name.equals("RANDOM")){
+                    input = mainClass.getPageController().setThruRandom();
+                    System.out.println(input.getFrameLength()+" kol "+input.getReferenceLength()+" olop "+input.getReferenceString());
+                }else if(name.equals("USER")){
+                    System.out.println("User");
+                }else{
+                    System.out.println("file");
+                }
+                setButtonOnLoad();
 			}
 	    });
                             
@@ -87,6 +99,7 @@ public class AlgorithmPanel extends JPanel{
     	add(userRadio);
     	add(fileRadio);
     	add(loadButton);
+    	add(userInputText);
     }
 
     private JPanel loadAboutAlgo(){
@@ -136,27 +149,29 @@ public class AlgorithmPanel extends JPanel{
                             
         startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				updateAboutAlgo(Algorithm.LRU);
-				//mainClass.getPageController().startAlgorithm(currentAlgorithm);
+				mainClass.getPageController().startAlgorithm(currentAlgorithm);
+				setButtonsOnExec(true);
 			}
 		});
 	    stopButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				//mainClass.getPageController().stopAlgorithm();
+				mainClass.getPageController().stopAlgorithm();
+				setButtonsOnExec(false);
 			}
 		});
 	    mainMenuButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-                		mainClass.openMenu();
+                mainClass.openMenu();
 			}
 		});
         saveButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				//mainClass.getPageController().saveOutput();	
+				mainClass.getPageController().saveOutput();	
 			}
 		});
 		
 	    setButtonNewState();
+
         pageTools.add(startButton);
         pageTools.add(stopButton);
         pageTools.add(mainMenuButton);
@@ -177,12 +192,14 @@ public class AlgorithmPanel extends JPanel{
                     "RIGHT");
         left.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //mainClass.getPageController().clickedLeft();
+            	currentAlgorithm = currentAlgorithm.previous();
+            	repaintAlgorithms();
             }
         });
         right.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                //mainClass.getPageController().clickedRight();
+            	currentAlgorithm = currentAlgorithm.next();
+            	repaintAlgorithms();
             }
         });
         
@@ -221,12 +238,17 @@ public class AlgorithmPanel extends JPanel{
     	userRadio.setEnabled(!stat);
     	fileRadio.setEnabled(!stat);
     	loadButton.setEnabled(!stat);
-    	//textbox disabled if user input
+    	userInputText.setEnabled(!stat);
     	//speed enabled
     }
     
     public void setButtonAfterExec(boolean stat){ //called after exec
     	saveButton.setEnabled(stat);	
+    }
+    
+    public void repaintAlgorithms(){
+    	aboutPanel.repaint();
+    	//visualPanel.repaint();
     }
 
     @Override
@@ -235,10 +257,19 @@ public class AlgorithmPanel extends JPanel{
         g.drawImage(page, 0, 0, this);
         g.drawImage(valFrame, 421,16 ,this);
         g.drawImage(selInp, 40, 286, this);
+        
+        if(userRadio.isSelected()){
+            userInputText.setEnabled(true);
+        }else{
+            userInputText.setEnabled(false);
+        }
+        updateUI(); //test if does not overlap on execution
     }
     
     private PRASRadioButton randomRadio, userRadio, fileRadio;
     private PRASButton startButton, stopButton, saveButton, mainMenuButton, loadButton, left, right;
     private BufferedImage page, currAboutImg, valFrame, selInp;
     private boolean doneExecute = false;
+    private JTextField userInputText;
+    private PageInput input;
 }

@@ -11,25 +11,23 @@ public class LRU extends PageReplacementAlgorithm{
         currentFrameArr = new ArrayList<>(frameLen);
     }
 
-    @Override
+
+@Override
     protected void insertFrameAtReference(int currentReference, int currentFrame, String[][] frames) {
         int prevRef = currentReference-1;
         String currentVal = String.valueOf(values[currentReference]);
-        
         if(currentFrameArr.size()==0)
             currentFrameArr.add(0, String.valueOf(values[prevRef]));
-	    
         if(currentFrameArr.contains(currentVal)){
-            updateHit(true);
+        	updateHit(true);
             rearrangeFrame(currentFrameArr, currentVal, currentVal); ///if full and not
             frames = produceNextFrame(frames, prevRef, currentReference, false, -1, currentVal);
             lRUPageFault(false, getIndexInFrame(frames, currentVal, currentReference));
         }else{
-            updateHit(false);
-        	int idx = -1;
-            if(currentFrameArr.size()==frameLen)
-            	idx= getIndexInFrame(frames, getLRUVal(currentFrameArr), prevRef);
-            
+        	updateHit(false);
+            int idx = getIndexInFrame(frames, getLRUVal(currentFrameArr), prevRef);
+            if(currentFrameArr.size()!=frameLen)
+            	idx=-1;
             frames = produceNextFrame(frames, prevRef, currentReference, true, idx, currentVal);
             rearrangeFrame(currentFrameArr, getLRUVal(currentFrameArr), currentVal);
             lRUPageFault(true, idx);
@@ -39,12 +37,13 @@ public class LRU extends PageReplacementAlgorithm{
     private void lRUPageFault(boolean pagefault, int currentFrame){
         if(pagefault)
             this.pageFaults++;
+        executingFrame = currentFrame;
         this.currentFrame = currentFrame;
     }
 
     private String[][] produceNextFrame(String[][] frames, int prevRef, int currentReference, boolean pagefault, int vicIdx, String currentVal){
         for(int i=0; i<frameLen; i++){
-        	if(frames[prevRef][i]==null){
+            if(frames[prevRef][i]==null){
              	if(pagefault && vicIdx==-1) //if does not exist and frame not full
              	   frames[currentReference][i] = currentVal;
                 break;
@@ -70,6 +69,7 @@ public class LRU extends PageReplacementAlgorithm{
         return idx;
     }
 
+    //refactor
     private void rearrangeFrame(ArrayList<String> currentFrameArr, String currentVal, String newVal){
     	if(currentFrameArr.size()==frameLen)
         	currentFrameArr.remove((Object)currentVal);

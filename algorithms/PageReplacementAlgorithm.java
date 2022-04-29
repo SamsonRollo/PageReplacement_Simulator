@@ -2,12 +2,12 @@ package algorithms;
 
 import model.PageInput;
 
-abstract class PageReplacementAlgorithm {
+public abstract class PageReplacementAlgorithm {
     protected String[] values;
     protected int frameLen;
     protected int refLen;
-    public int currentReference;
-    public int currentFrame;
+    public int currentReference, executingRef = 0;
+    public int currentFrame, executingFrame = 0;
     public int pageFaults;
     public boolean hit = false;
     public String[][] frames;
@@ -31,11 +31,13 @@ abstract class PageReplacementAlgorithm {
         }else{
             insertFrameAtReference(currentReference, currentFrame, frames);
         }
+        executingRef = currentReference;
         this.currentReference++;
     }
 
     protected void pageFault(int currentReference, String[][] frames, int i){
         frames[currentReference][i] = String.valueOf(values[currentReference]);
+        executingFrame = currentFrame;
         this.currentFrame = (this.currentFrame+1)%frameLen;
         this.pageFaults++;
     }
@@ -75,6 +77,14 @@ abstract class PageReplacementAlgorithm {
     public int getCurrentFrame(){
         return this.currentFrame;
     }
+
+    public int getExecutingRef(){ 
+    	return this.executingRef;
+    }
+    
+    public int getExecutingFrame(){ 
+	    return this.executingFrame;
+	}
 
     public String[] getCurrentFrames(){
         return privGetCurrentFrames(this.currentReference, this.frameLen, this.frames);
