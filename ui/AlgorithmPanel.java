@@ -8,6 +8,7 @@ import java.util.Enumeration;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.awt.Graphics;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -20,12 +21,13 @@ public class AlgorithmPanel extends JPanel{
     public final String PANEL_NAME = "alPanel";
     private Algorithm currentAlgorithm;
     private JPanel aboutPanel;
+    private InputPanel inputPanel;
     private ImageLoader imgLoader;
-    private ButtonGroup butGrp;
 
     public AlgorithmPanel(Dimension d, MainClass mainClass){
     	this.mainClass = mainClass;
         currentAlgorithm = Algorithm.FIFO;
+        font = new Font("sans_serif", Font.BOLD, 17);
         imgLoader = new ImageLoader();
         setLayout(null);
         setSize(d);
@@ -39,67 +41,15 @@ public class AlgorithmPanel extends JPanel{
         imgLoader.reloadImage("src/execution_values.png", "ex");
         valFrame = imgLoader.getBuffImage();
         loadArrows();
-        loadInputs();
+        add(loadInputs());
         add(loadPageTools());
 	    add(loadAboutAlgo());   
     }
     
-    private void loadInputs(){
-    	imgLoader.reloadImage("src/select_input.png", "selInp");
-    	selInp = imgLoader.getBuffImage();
-    	randomRadio = new PRASRadioButton(58, 322, 100, 27);
-    	userRadio = new PRASRadioButton(168, 322, 120, 27);
-    	fileRadio = new PRASRadioButton(298, 322, 100, 27);
-    	loadButton = new PRASButton(58, 387, 100, 27);
-    	userInputText = new JTextField();
-    	userInputText.setBounds(58, 353, 335, 30);
-    	userInputText.setEnabled(false);
-    	randomRadio.setSelected(true);
-    	
-    	randomRadio.setIcons("src/unselected/unselect_random.png",
-                            "src/selected/select_random.png",
-                            "RANDOM");
-	    userRadio.setIcons("src/unselected/unselect_usrinp.png",
-                            "src/selected/select_usrinp.png",
-                            "USER");
-        fileRadio.setIcons("src/unselected/unselect_file.png",
-                            "src/selected/select_file.png",
-                            "FILE");
-        loadButton.setIcons("src/unselected/unselect_load.png",
-                            "src/selected/select_load.png",
-                            "LOAD");
-        
-        loadButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				String name = "RANDOM";
-				for (Enumeration<AbstractButton> buttons = butGrp.getElements(); buttons.hasMoreElements();) {
-         	   			AbstractButton button = buttons.nextElement();
-            			if (button.isSelected()) {
-                			name = button.getName();
-                			break;
-            			}
-        		}
-                if(name.equals("RANDOM")){
-                    input = mainClass.getPageController().setThruRandom();
-                    System.out.println(input.getFrameLength()+" kol "+input.getReferenceLength()+" olop "+input.getReferenceString());
-                }else if(name.equals("USER")){
-                    System.out.println("User");
-                }else{
-                    System.out.println("file");
-                }
-                setButtonOnLoad();
-			}
-	    });
-                            
-        butGrp = new ButtonGroup();
-        butGrp.add(randomRadio);
-        butGrp.add(userRadio);
-        butGrp.add(fileRadio);
-    	add(randomRadio);
-    	add(userRadio);
-    	add(fileRadio);
-    	add(loadButton);
-    	add(userInputText);
+    private JPanel loadInputs(){
+    	inputPanel = new InputPanel(32,265,385,143, mainClass, this);
+    	inputPanel.loadInputPanel();
+    	return inputPanel;
     }
 
     private JPanel loadAboutAlgo(){
@@ -109,9 +59,10 @@ public class AlgorithmPanel extends JPanel{
     		@Override
     		public void paintComponent(Graphics g){
         		g.drawImage(currAboutImg, 0, 0, this);
+        		g.dispose();
     		}
     	};
-    	aboutPanel.setBounds(32,16,385,290);
+    	aboutPanel.setBounds(32,16,385,250);
     	return aboutPanel;
     }
     
@@ -149,19 +100,20 @@ public class AlgorithmPanel extends JPanel{
                             
         startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				input = inputPanel.getInputs();
 				mainClass.getPageController().startAlgorithm(currentAlgorithm);
 				setButtonsOnExec(true);
 			}
 		});
 	    stopButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				mainClass.getPageController().stopAlgorithm();
+				//mainClass.getPageController().stopAlgorithm();
 				setButtonsOnExec(false);
 			}
 		});
 	    mainMenuButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-                mainClass.openMenu();
+                		mainClass.openMenu();
 			}
 		});
         saveButton.addActionListener(new ActionListener(){
@@ -178,6 +130,7 @@ public class AlgorithmPanel extends JPanel{
       	pageTools.add(saveButton);
 
         return pageTools;
+        
     }
     
      private void loadArrows(){
@@ -208,7 +161,7 @@ public class AlgorithmPanel extends JPanel{
     }
     
     private JPanel loadVisualPanel(){
-        VisualPanel visualPanel = new VisualPanel(mainClass, 421, 16, 395, 552);//
+        VisualPanel visualPanel = new VisualPanel(mainClass, 421, 16, 395, 552, font);//
         return visualPanel;
     }
     
@@ -234,11 +187,9 @@ public class AlgorithmPanel extends JPanel{
     	mainMenuButton.setEnabled(!stat);
     	left.setEnabled(!stat);
     	right.setEnabled(!stat);
-    	randomRadio.setEnabled(!stat);
-    	userRadio.setEnabled(!stat);
-    	fileRadio.setEnabled(!stat);
-    	loadButton.setEnabled(!stat);
-    	userInputText.setEnabled(!stat);
+    	inputPanel.setRadioEnable(!stat);
+    	inputPanel.setLoadEnable(!stat);
+    	inputPanel.setTextFieldEnable(!stat);
     	//speed enabled
     }
     
@@ -256,20 +207,12 @@ public class AlgorithmPanel extends JPanel{
         super.paintComponent(g);
         g.drawImage(page, 0, 0, this);
         g.drawImage(valFrame, 421,16 ,this);
-        g.drawImage(selInp, 40, 286, this);
-        
-        if(userRadio.isSelected()){
-            userInputText.setEnabled(true);
-        }else{
-            userInputText.setEnabled(false);
-        }
-        updateUI(); //test if does not overlap on execution
+        g.drawImage(selInp, 32, 265, this);
     }
     
-    private PRASRadioButton randomRadio, userRadio, fileRadio;
-    private PRASButton startButton, stopButton, saveButton, mainMenuButton, loadButton, left, right;
+    private PRASButton startButton, stopButton, saveButton, mainMenuButton, left, right;
     private BufferedImage page, currAboutImg, valFrame, selInp;
     private boolean doneExecute = false;
-    private JTextField userInputText;
     private PageInput input;
+    private Font font;
 }

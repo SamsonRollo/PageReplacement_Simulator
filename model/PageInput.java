@@ -42,7 +42,7 @@ public class PageInput{
         this.refLen = refLen;
         this.frameLen = frameLen;
 
-        String[] tempRefVal = refValues.replaceAll(" ","").split(",");
+        String[] tempRefVal = refValues.replaceAll(" ","").split(",|-");
         if(tempRefVal.length != refLen)
             throw new InvalidInputException("Number of Reference values not equal to Refence length.");
         refValArr = new String[refLen];
