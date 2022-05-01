@@ -1,6 +1,7 @@
 package algorithms;
 
 import java.util.ArrayList;
+
 import model.PageInput;
 
 public class LRU extends PageReplacementAlgorithm{
@@ -19,7 +20,7 @@ public class LRU extends PageReplacementAlgorithm{
         if(currentFrameArr.size()==0)
             currentFrameArr.add(0, String.valueOf(values[prevRef]));
         if(currentFrameArr.contains(currentVal)){
-        	updateHit(true);
+        	updateHit(true);//
             rearrangeFrame(currentFrameArr, currentVal, currentVal); ///if full and not
             frames = produceNextFrame(frames, prevRef, currentReference, false, -1, currentVal);
             lRUPageFault(false, getIndexInFrame(frames, currentVal, currentReference));

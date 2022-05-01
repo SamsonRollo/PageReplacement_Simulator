@@ -2,6 +2,8 @@ package ui;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -12,28 +14,26 @@ import java.util.Enumeration;
 import model.PageInput;
 
 public class InputPanel extends JPanel{
+	private FileNameExtensionFilter extF1 = new FileNameExtensionFilter("Page Replacement Simulator file", "prs");
+    private FileNameExtensionFilter extF2 = new FileNameExtensionFilter("Text file", "txt", "text");
     private PRASRadioButton randomRadio, userRadio, fileRadio;
     private PRASTextField userInputText, userInputFrame, userInputRef;
     private PRASButton loadButton;
     private ButtonGroup butGrp;
 	private MainClass mainClass;
-    private BufferedImage selInp;
-    private PageInput input;
     private AlgorithmPanel ap;
     private boolean isUserSelect = false;
 	
     //32, 256, 385, 132
 	public InputPanel(int x, int y, int w, int h, MainClass mainClass, AlgorithmPanel ap){
+		this.mainClass = mainClass;
+		this.ap = ap;
 		setLayout(null);
 		setOpaque(false);
 		setBounds(x,y,w,h);
-		this.mainClass = mainClass;
-		this.ap = ap;
 	}
 	
 	public void loadInputPanel(){
-		ImageLoader imgLoader = new ImageLoader("src/select_input.png", "selInp");
-    	selInp = imgLoader.getBuffImage();
     	randomRadio = new PRASRadioButton(16, 39, 100, 27);
     	userRadio = new PRASRadioButton(126, 39, 120, 27);
     	fileRadio = new PRASRadioButton(256, 39, 100, 27);
@@ -60,6 +60,7 @@ public class InputPanel extends JPanel{
         
         loadButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+				PageInput input = new PageInput();
 				String name = "RANDOM";
 				for (Enumeration<AbstractButton> buttons = butGrp.getElements(); buttons.hasMoreElements();) {
          	   			AbstractButton button = buttons.nextElement();
@@ -76,10 +77,23 @@ public class InputPanel extends JPanel{
         											userInputFrame.getText(),
         											userInputText.getText());
         			}else{
-        				System.out.println("file");
+        				JFileChooser jf = new JFileChooser();
+        				jf.setAcceptAllFileFilterUsed(false);
+      					jf.addChoosableFileFilter(extF1);
+      					jf.addChoosableFileFilter(extF2);
+      
+        				if(jf.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+        					try{
+							input = mainClass.getPageController().setThruFileInput(jf.getSelectedFile());
+        					}catch(Exception ex){};
+        				}else{
+        					input.hasError(true);
+        				}
         			}
-				System.out.println(input.getFrameLength()+" kol "+input.getReferenceLength()+" olop "+input.getReferenceString());
-				ap.setButtonOnLoad();
+				if(!input.hasError()){	
+					ap.setPageInput(input);
+					ap.setButtonOnLoad();
+				}
 			}
 	});
                             
@@ -112,15 +126,10 @@ public class InputPanel extends JPanel{
     	userRadio.setEnabled(stat);
     	fileRadio.setEnabled(stat);
     }
-    
-    public PageInput getInputs(){
-    	return input;
-    }
 
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.drawImage(selInp, 0, 0, this);
         
         if(userRadio.isSelected() && !isUserSelect){
         	isUserSelect = true;

@@ -1,33 +1,31 @@
 package ui;
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 import controller.PageController;
 
-public class MainClass extends JFrame implements ActionListener{ //rename to PRAS
+public class MainClass extends JFrame{ //rename to PRAS
 	private PageController pageController;
-	private JPanel activePanel; //either main menu or ative algorithm
+	private JPanel activePanel;
 	private MainMenuPanel mainMenuPanel;
 	private AlgorithmPanel algorithmPanel;
 	private CardLayout card;
 	private static final int COVER_WIDTH = 500;
 	private static final int COVER_HEIGHT = 600;
-	private static final int PAGE_WIDTH = 800;
+	private static final int PAGE_WIDTH = 850;
 	private static final int PAGE_HEIGHT = 600;
 	private final String ICON_PATH = "src/tray_icon.png";
 
-	public MainClass(){
-		setTrayIcon();
-		setTitle("PRAS");
+    public MainClass(){
+    	setTrayIcon();
 		setUndecorated(true);
 		setResizable(false);
 		getContentPane().setLayout(new FlowLayout());
 		loadMainMenu();
 		loadPages();
 		pack();
-		setLocationRelativeTo(null);		
+		setLocationRelativeTo(null);	
 		setVisible(true);
 	}
 
@@ -42,7 +40,7 @@ public class MainClass extends JFrame implements ActionListener{ //rename to PRA
 	}
 
 	private void loadPages(){
-		algorithmPanel = new AlgorithmPanel(new Dimension(PAGE_WIDTH, PAGE_HEIGHT), this);
+		algorithmPanel = new AlgorithmPanel(new Dimension(PAGE_WIDTH, PAGE_HEIGHT), getMainClass());
 		activePanel.add(algorithmPanel, algorithmPanel.getPanelName());
 	}
 
@@ -60,19 +58,18 @@ public class MainClass extends JFrame implements ActionListener{ //rename to PRA
 		pack();
 		setLocationRelativeTo(null);
 	}
-
+	
+	private void setTrayIcon(){
+		ImageLoader il = new ImageLoader(ICON_PATH, "icon");
+            setIconImage(il.getBuffImage());
+	}
+	
 	public PageController getPageController(){
 		return pageController;
 	}
-
-	private void setTrayIcon(){
-		ImageLoader il = new ImageLoader(ICON_PATH, "icon");
-        setIconImage(il.getBuffImage());
-	}
-
-    @Override
-    public void actionPerformed(ActionEvent arg0) {
-        // TODO Auto-generated method stub
+    
+    private MainClass getMainClass(){
+    	return this;
     }
     
     public static void main(String[] args){

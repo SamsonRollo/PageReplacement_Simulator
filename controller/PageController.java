@@ -5,7 +5,8 @@ import algorithms.*;
 import exceptions.*;
 
 public class PageController{
-    PageInput input;
+    private PageInput input;
+    private PageReplacementAlgorithm pras;
     
     public PageController(){
     	input = new PageInput();
@@ -38,8 +39,6 @@ public class PageController{
     }
 
     public void startAlgorithm(Algorithm algorithm){
-    	PageReplacementAlgorithm pras;
-
     	if(algorithm.equals(Algorithm.FIFO)){
     		pras = new Fifo(input);
     	}else if(algorithm.equals(Algorithm.LRU)){
@@ -55,10 +54,8 @@ public class PageController{
         			if((pras.getCurrentRefernce())==input.getReferenceLength())
         				break;
         			pras.move();
-        			System.out.println("Current Ref: "+pras.getExecutingRef()+" Val: "+(input.getReferenceValues())[pras.getExecutingRef()]+" at Frame: "+pras.getExecutingFrame()+" Hit: "+pras.isHit());	
-        			System.out.println("PageFault: "+pras.getPageFaults());
         			try{
-        				Thread.sleep(600); //dynamic based on the slider
+        				Thread.sleep(600); //change this
         			}catch(Exception e){};			
         		}
         	}
@@ -67,7 +64,7 @@ public class PageController{
     }
 
     public void stopAlgorithm(){
-        //stop algo
+        //
     } 
 
     public void saveOutput(){
@@ -75,5 +72,57 @@ public class PageController{
 	}
     public PageInput getPageInput(){
         return input;
+    }
+    
+    public String[] getPageInputValues(){
+    	return input.getReferenceValues();
+    }
+    
+    public int getExecCurrentReference(){
+    	try{
+    		return pras.getExecutingRef();
+    	}catch(Exception e){
+    		return 0;
+    	}
+    }
+    
+    public int getExecCurrentFrame(){
+    	try{
+    		return pras.getExecutingFrame();
+    	}catch(Exception e){
+    		return 0;
+    	}
+    }
+    
+    public int getExecCurrentPageFault(){
+    	try{
+    		return pras.getPageFaults();
+    	}catch(Exception e){
+    		return 0;
+    	}
+    }
+    
+    public int getExecCurrentHitCount(){
+    	try{
+    		return (pras.getCurrentRefernce()+1-pras.getPageFaults());
+    	}catch(Exception e){
+    		return 0;
+    	}
+    }
+    
+    public int getExecCurrentMissCount(){
+    	try{
+    		return pras.getPageFaults();
+    	}catch(Exception e){
+    		return 0;
+    	}
+    }
+    
+    public boolean getExecCurrentIsHit(){
+    	try{
+    		return pras.isHit();
+    	}catch(Exception e){
+    		return false;
+    	}
     }
 }

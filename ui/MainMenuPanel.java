@@ -2,14 +2,11 @@ package ui;
 
 import javax.swing.JPanel;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.awt.Graphics;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
 public class MainMenuPanel extends JPanel{
-    private BufferedImage cover;
     private static final String COVER_PATH = "src/cover.png";
     private MainClass mainClass;
     public final String PANEL_NAME = "mmPanel";
@@ -23,15 +20,15 @@ public class MainMenuPanel extends JPanel{
     }
 
     private void drawMenu(){
-        ImageLoader il = new ImageLoader(COVER_PATH, "cover");
-        cover = il.getBuffImage();
-        loadMenuTools();
+    	ImagePanel ip = new ImagePanel(COVER_PATH, "cover");
+    	loadMenuTools();
+    	add(ip);
     }
 
     private void loadMenuTools(){
-        PRASButton openButton = new PRASButton(220,280, 166, 45);
-        PRASButton aboutButton = new PRASButton(220,335, 166, 45);
-        PRASButton exitButton = new PRASButton(220,390, 166, 45);
+        PRASButton openButton = new PRASButton(220, 280, 166, 45);
+        PRASButton aboutButton = new PRASButton(220, 335, 166, 45);
+        PRASButton exitButton = new PRASButton(220, 390, 166, 45);
 
         openButton.setIcons("src/unselected/unselect_open.png",
                             "src/selected/select_open.png",
@@ -58,19 +55,13 @@ public class MainMenuPanel extends JPanel{
                     System.exit(0);
                 }
             });
-
+            	
         add(openButton);
         add(aboutButton);
-        add(exitButton);   
+        add(exitButton);
     }
-
+    
     public String getPanelName(){
         return PANEL_NAME;
-    }
-
-    @Override
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.drawImage(cover, 0, 0, this);
     }
 }

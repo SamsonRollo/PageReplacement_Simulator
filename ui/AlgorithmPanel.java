@@ -1,13 +1,8 @@
 package ui;
 
 import javax.swing.JPanel;
-import javax.swing.ButtonGroup;
-import javax.swing.AbstractButton;
-import javax.swing.JTextField;
-import java.util.Enumeration;
+import javax.swing.JSlider;
 import java.awt.Dimension;
-import java.awt.image.BufferedImage;
-import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -17,33 +12,27 @@ import model.PageInput;
 
 public class AlgorithmPanel extends JPanel{
     private static final String PAGE_PATH = "src/page.png";
-    private MainClass mainClass;
     public final String PANEL_NAME = "alPanel";
-    private Algorithm currentAlgorithm;
-    private JPanel aboutPanel;
+    private Algorithm currentAlgorithm = Algorithm.FIFO;
+    private MainClass mainClass;
+    private ImagePanel aboutPanel;
     private InputPanel inputPanel;
-    private ImageLoader imgLoader;
 
     public AlgorithmPanel(Dimension d, MainClass mainClass){
     	this.mainClass = mainClass;
-        currentAlgorithm = Algorithm.FIFO;
-        font = new Font("sans_serif", Font.BOLD, 17);
-        imgLoader = new ImageLoader();
+    	drawPage();
         setLayout(null);
         setSize(d);
         setPreferredSize(d);
-        drawPage();
     }
 
     private void drawPage(){
-        imgLoader.reloadImage(PAGE_PATH, "pager");
-        page = imgLoader.getBuffImage();
-        imgLoader.reloadImage("src/execution_values.png", "ex");
-        valFrame = imgLoader.getBuffImage();
-        loadArrows();
-        add(loadInputs());
-        add(loadPageTools());
-	    add(loadAboutAlgo());   
+	loadArrows();
+    add(loadPageTools());
+	add(loadAboutAlgo());
+	add(loadInputs());  
+	//add(loadVisualPanel()); invoke after sucessful load
+	add(new ImagePanel(PAGE_PATH, "pager"));
     }
     
     private JPanel loadInputs(){
@@ -53,37 +42,27 @@ public class AlgorithmPanel extends JPanel{
     }
 
     private JPanel loadAboutAlgo(){
-        imgLoader.reloadImage("src/"+currentAlgorithm.name()+"_about.png", currentAlgorithm.name());
-    	currAboutImg = imgLoader.getBuffImage();
-    	aboutPanel = new JPanel(null){
-    		@Override
-    		public void paintComponent(Graphics g){
-        		g.drawImage(currAboutImg, 0, 0, this);
-        		g.dispose();
-    		}
-    	};
-    	aboutPanel.setBounds(32,16,385,250);
+    	aboutPanel = new ImagePanel("src/"+currentAlgorithm.name()+"_about.png", currentAlgorithm.name(),32,16);
     	return aboutPanel;
     }
     
     public void updateAboutAlgo(Algorithm currentAlgorithm){
     	this.currentAlgorithm = currentAlgorithm;
-        imgLoader.reloadImage("src/"+currentAlgorithm.name()+"_about.png", currentAlgorithm.name());
-    	currAboutImg = imgLoader.getBuffImage();
-    	aboutPanel.repaint();
+    	aboutPanel.updateImage("src/"+currentAlgorithm.name()+"_about.png", currentAlgorithm.name());
     }
 
     private JPanel loadPageTools(){
         JPanel pageTools = new JPanel(null);
         
-        pageTools.setBounds(32,16,385,552); //specific measurement from the src
+        pageTools.setBounds(32, 416,385,152);
         pageTools.setOpaque(false);
-        pageTools.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.green));
 
-        startButton = new PRASButton(46, 415, 125, 34);
-        stopButton = new PRASButton(46, 464, 125, 34);
-        saveButton = new PRASButton(213, 415, 125,34);
-        mainMenuButton = new PRASButton(213, 464, 125, 34);
+        startButton = new PRASButton(46, 7, 125, 34);
+        stopButton = new PRASButton(46, 51, 125, 34);
+        saveButton = new PRASButton(213, 7, 125,34);
+        mainMenuButton = new PRASButton(213, 51, 125, 34);
+        slider = new JSlider(1,100,50);
+        slider.setBounds(46, 115, 300, 34);
 
         startButton.setIcons("src/unselected/unselect_start.png",
                             "src/selected/select_start.png",
@@ -100,7 +79,6 @@ public class AlgorithmPanel extends JPanel{
                             
         startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				input = inputPanel.getInputs();
 				mainClass.getPageController().startAlgorithm(currentAlgorithm);
 				setButtonsOnExec(true);
 			}
@@ -128,12 +106,13 @@ public class AlgorithmPanel extends JPanel{
         pageTools.add(stopButton);
         pageTools.add(mainMenuButton);
       	pageTools.add(saveButton);
+      	pageTools.add(slider);
 
         return pageTools;
         
     }
     
-     private void loadArrows(){
+    private void loadArrows(){
         left = new PRASButton(2, 0, 45, 45); //273 =y
         right = new PRASButton(803, 0, 45, 45);
         
@@ -145,13 +124,13 @@ public class AlgorithmPanel extends JPanel{
                     "RIGHT");
         left.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-            	currentAlgorithm = currentAlgorithm.previous();
+            	updateAboutAlgo(currentAlgorithm.previous());
             	repaintAlgorithms();
             }
         });
         right.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-            	currentAlgorithm = currentAlgorithm.next();
+            	updateAboutAlgo(currentAlgorithm.next());
             	repaintAlgorithms();
             }
         });
@@ -160,13 +139,19 @@ public class AlgorithmPanel extends JPanel{
         add(right);
     }
     
-    private JPanel loadVisualPanel(){
-        VisualPanel visualPanel = new VisualPanel(mainClass, 421, 16, 395, 552, font);//
-        return visualPanel;
-    }
+   // private JPanel loadVisualPanel(){
+    //	ValuesPanel valPanel = new ValuesPanel(0,0,395,140, mainClass, font);
+        //VisualPanel visualPanel = new VisualPanel(mainClass, 421, 16, 395, 552, font);//
+        //return visualPanel;
+      //  return valPanel;
+    //}
     
     public String getPanelName(){
         return PANEL_NAME;
+    }
+     
+    public void setPageInput(PageInput input){
+    	this.input = input;
     }
     
     public void setButtonNewState(){ //new state
@@ -198,21 +183,15 @@ public class AlgorithmPanel extends JPanel{
     }
     
     public void repaintAlgorithms(){
-    	aboutPanel.repaint();
-    	//visualPanel.repaint();
+    	repaint();
     }
-
-    @Override
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        g.drawImage(page, 0, 0, this);
-        g.drawImage(valFrame, 421,16 ,this);
-        g.drawImage(selInp, 32, 265, this);
+    
+    public Font getFont(){
+    	return font;
     }
     
     private PRASButton startButton, stopButton, saveButton, mainMenuButton, left, right;
-    private BufferedImage page, currAboutImg, valFrame, selInp;
-    private boolean doneExecute = false;
+    private JSlider slider;
     private PageInput input;
-    private Font font;
+    private Font font = new Font("sans_serif", Font.BOLD, 17);
 }

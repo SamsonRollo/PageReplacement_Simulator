@@ -1,6 +1,6 @@
 package algorithms;
 
-import model.*;
+import model.PageInput;
 
 public class OPT extends PageReplacementAlgorithm{
 

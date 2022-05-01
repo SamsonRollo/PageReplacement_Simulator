@@ -69,7 +69,14 @@ public abstract class PageReplacementAlgorithm {
     public int getPageFaults(){
         return this.pageFaults;
     }
-
+    
+    public int getExecutingRef(){ //
+    	return this.executingRef;
+    }
+    
+    public int getExecutingFrame(){ //
+	return this.executingFrame;
+	}
     public int getCurrentRefernce(){
         return this.currentReference;
     }
@@ -77,14 +84,6 @@ public abstract class PageReplacementAlgorithm {
     public int getCurrentFrame(){
         return this.currentFrame;
     }
-
-    public int getExecutingRef(){ 
-    	return this.executingRef;
-    }
-    
-    public int getExecutingFrame(){ 
-	    return this.executingFrame;
-	}
 
     public String[] getCurrentFrames(){
         return privGetCurrentFrames(this.currentReference, this.frameLen, this.frames);
