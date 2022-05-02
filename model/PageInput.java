@@ -46,10 +46,7 @@ public class PageInput{
         	hasError = true;
             throw new InvalidInputException("Frame Length out of range! Range: "+MIN_FRAME_LEN+"-"+MAX_FRAME_LEN);
         }
-        //set the lengths
-        this.refLen = refLen;
-        this.frameLen = frameLen;
-
+    
         String[] tempRefVal = refValues.replaceAll(" ","").split(",|-");
         if(tempRefVal.length != refLen){
         	hasError = true;
@@ -62,9 +59,13 @@ public class PageInput{
                 refValArr[i] = tempRefVal[i];
             }catch(NumberFormatException ex){
             	hasError = true;
+                refValArr = null;
                 throw new InvalidInputException("Some Reference values are invalid.");
             }
         }
+        //set the lengths
+        this.refLen = refLen;
+        this.frameLen = frameLen;
     }
 
     public void getFromFileInput(File file) throws Exception{

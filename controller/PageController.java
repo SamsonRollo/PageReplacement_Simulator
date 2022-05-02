@@ -1,6 +1,7 @@
 package controller;
 
 import model.*;
+import ui.AlgorithmPanel;
 import algorithms.*;
 import exceptions.*;
 
@@ -38,7 +39,7 @@ public class PageController{
         return input;
     }
 
-    public void startAlgorithm(Algorithm algorithm){
+    public void startAlgorithm(Algorithm algorithm, AlgorithmPanel panel){   	
     	if(algorithm.equals(Algorithm.FIFO)){
     		pras = new Fifo(input);
     	}else if(algorithm.equals(Algorithm.LRU)){
@@ -55,7 +56,8 @@ public class PageController{
         				break;
         			pras.move();
         			try{
-        				Thread.sleep(600); //change this
+        				System.out.println(panel.getSpeed());
+        				Thread.sleep(panel.getSpeed());
         			}catch(Exception e){};			
         		}
         	}
@@ -72,6 +74,10 @@ public class PageController{
 	}
     public PageInput getPageInput(){
         return input;
+    }
+
+    public int getNumberOfFrames(){
+        return input.getFrameLength();
     }
     
     public String[] getPageInputValues(){
@@ -104,7 +110,7 @@ public class PageController{
     
     public int getExecCurrentHitCount(){
     	try{
-    		return (pras.getCurrentRefernce()+1-pras.getPageFaults());
+    		return (pras.getCurrentRefernce()-pras.getPageFaults());
     	}catch(Exception e){
     		return 0;
     	}
@@ -124,5 +130,13 @@ public class PageController{
     	}catch(Exception e){
     		return false;
     	}
+    }
+
+    public void setPageInput(PageInput input){
+        this.input = input;
+    }
+
+    public void setPRAStoNull(){
+        this.pras = null;
     }
 }

@@ -15,7 +15,7 @@ import model.PageInput;
 
 public class InputPanel extends JPanel{
 	private FileNameExtensionFilter extF1 = new FileNameExtensionFilter("Page Replacement Simulator file", "prs");
-    private FileNameExtensionFilter extF2 = new FileNameExtensionFilter("Text file", "txt", "text");
+      	private FileNameExtensionFilter extF2 = new FileNameExtensionFilter("Text file", "txt", "text");
     private PRASRadioButton randomRadio, userRadio, fileRadio;
     private PRASTextField userInputText, userInputFrame, userInputRef;
     private PRASButton loadButton;
@@ -38,7 +38,7 @@ public class InputPanel extends JPanel{
     	userRadio = new PRASRadioButton(126, 39, 120, 27);
     	fileRadio = new PRASRadioButton(256, 39, 100, 27);
     	loadButton = new PRASButton(258, 107, 100, 27);
-    	userInputText = new PRASTextField(16, 73, 343, 30, "Reference String here: 0-40 (Separate with a comma)");
+    	userInputText = new PRASTextField(16, 73, 343, 30, "Reference String here: 0-20 (Separate with a comma)");
     	userInputFrame = new PRASTextField(16, 107, 105, 27, "Frame size: 3-10");
     	userInputRef = new PRASTextField(130, 107, 120, 27, "Refence len: 10-40");
   
@@ -91,10 +91,11 @@ public class InputPanel extends JPanel{
         				}
         			}
 				if(!input.hasError()){	
-					ap.setPageInput(input);
+					ap.setLabelsOnScreen();
 					ap.setButtonOnLoad();
 				}
-			}
+				mainClass.getPageController().setPRAStoNull();
+            }
 	});
                             
         butGrp = new ButtonGroup();
