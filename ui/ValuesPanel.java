@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.Color;
 
-import controller.PageController;
+import controller.PageController;;
 
 public class ValuesPanel extends JPanel{
 	private PageController controller;
@@ -37,7 +37,7 @@ public class ValuesPanel extends JPanel{
                    			g.drawString("-",x,y);
                    			x+=8;
                    		}
-                   		if(x>=380 || ((g.getFontMetrics().stringWidth(val))+2)>=380){
+                   		if(x>=380 || ((g.getFontMetrics().stringWidth(val))+2+x)>=380){
                    			y+=18;
                    			x=5;
                    		}

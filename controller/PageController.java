@@ -1,9 +1,15 @@
 package controller;
 
-import model.*;
+import algorithms.Algorithm;
+import algorithms.Clock;
+import algorithms.Fifo;
+import algorithms.LRU;
+import algorithms.OPT;
+import algorithms.PageReplacementAlgorithm;
+import exceptions.ErrorReport;
+import exceptions.InvalidInputException;
+import model.PageInput;
 import ui.AlgorithmPanel;
-import algorithms.*;
-import exceptions.*;
 
 public class PageController{
     private PageInput input;
@@ -55,8 +61,9 @@ public class PageController{
         			if((pras.getCurrentRefernce())==input.getReferenceLength())
         				break;
         			pras.move();
+                    panel.getVisualPanel().getOutputPanel().revalidate();
+                    panel.getVisualPanel().getOutputPanel().repaint();
         			try{
-        				System.out.println(panel.getSpeed());
         				Thread.sleep(panel.getSpeed());
         			}catch(Exception e){};			
         		}
@@ -130,6 +137,22 @@ public class PageController{
     	}catch(Exception e){
     		return false;
     	}
+    }
+
+    public String[][] getPRASFrames(){
+        try{
+            return pras.getFrames();
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    public boolean[] getPRASBolArr(){
+        try{
+            return pras.getHitArray();
+        }catch(Exception e){
+            return null;
+        }
     }
 
     public void setPageInput(PageInput input){

@@ -8,7 +8,7 @@ public class ImageLoader {
     BufferedImage img = null;
     String alt = null;
 
-    public ImageLoader(){}
+	   public ImageLoader(){}
 
     public ImageLoader(String path, String alt){
         reloadImage(path, alt);
@@ -32,8 +32,9 @@ public class ImageLoader {
     public String getAlt(){
         return alt;
     }
-
+    
     public boolean isNull(){
         return img == null;
     }
 }
+

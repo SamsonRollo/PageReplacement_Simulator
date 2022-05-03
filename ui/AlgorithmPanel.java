@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.util.Hashtable;
 
 import algorithms.Algorithm;
-import model.PageInput;
 
 public class AlgorithmPanel extends JPanel{
     private static final String PAGE_PATH = "src/page.png";
@@ -159,14 +158,14 @@ public class AlgorithmPanel extends JPanel{
     }
     
    private JPanel loadVisualPanel(){
-    	visualPanel = new VisualPanel(mainClass, 421, 16, 395, 552, font);
+    	visualPanel = new VisualPanel(mainClass.getPageController(), 421, 16, 395, 552, font);
     	return visualPanel;
     }
     
     public String getPanelName(){
         return PANEL_NAME;
     }
-
+    
     public void setLabelsOnScreen(){
     	add(loadVisualPanel());
     	valPanel = visualPanel.getValuePanel();
@@ -210,6 +209,10 @@ public class AlgorithmPanel extends JPanel{
     
     public AlgorithmPanel getAlgoPanel(){
     	return this;
+    }
+
+    public VisualPanel getVisualPanel(){
+        return this.visualPanel;
     }
     
     public Font getFont(){
