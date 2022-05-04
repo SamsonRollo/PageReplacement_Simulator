@@ -34,12 +34,11 @@ public class Clock extends PageReplacementAlgorithm{
                 frames[currentReference][i] = frames[prevRef][i];
             }
         }
-
-        if(exist){
-            updateHit(true);
-        }else{
-            updateHit(false);
-        }
+        
+        if(exist)
+        	updateHit(true);
+        else
+        	updateHit(false);
     } 
 
     @Override

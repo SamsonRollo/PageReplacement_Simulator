@@ -2,21 +2,23 @@ package algorithms;
 
 import model.PageInput;
 
-abstract class PageReplacementAlgorithm {
+public abstract class PageReplacementAlgorithm {
     protected String[] values;
     protected int frameLen;
     protected int refLen;
-    public int currentReference;
-    public int currentFrame;
+    public int currentReference, executingRef = 0;
+    public int currentFrame, executingFrame = 0;
     public int pageFaults;
     public boolean hit = false;
     public String[][] frames;
+    public boolean[] hitBoolean;
 
     public void setValues(PageInput input){
         values = input.getReferenceValues();
         frameLen = input.getFrameLength();
         refLen = input.getReferenceLength();
         frames = new String[refLen][frameLen];
+        hitBoolean = new boolean[refLen];
         currentReference = 0;
         currentFrame = -1;
         pageFaults = 0;
@@ -31,11 +33,14 @@ abstract class PageReplacementAlgorithm {
         }else{
             insertFrameAtReference(currentReference, currentFrame, frames);
         }
+        hitBoolean[currentReference] = hit;
+        executingRef = currentReference;
         this.currentReference++;
     }
 
     protected void pageFault(int currentReference, String[][] frames, int i){
         frames[currentReference][i] = String.valueOf(values[currentReference]);
+        executingFrame = currentFrame;
         this.currentFrame = (this.currentFrame+1)%frameLen;
         this.pageFaults++;
     }
@@ -67,13 +72,24 @@ abstract class PageReplacementAlgorithm {
     public int getPageFaults(){
         return this.pageFaults;
     }
-
+    
+    public int getExecutingRef(){ //
+    	return this.executingRef;
+    }
+    
+    public int getExecutingFrame(){ //
+	return this.executingFrame;
+	}
     public int getCurrentRefernce(){
         return this.currentReference;
     }
 
     public int getCurrentFrame(){
         return this.currentFrame;
+    }
+
+    public boolean[] getHitArray(){
+        return this.hitBoolean;
     }
 
     public String[] getCurrentFrames(){
@@ -92,3 +108,4 @@ abstract class PageReplacementAlgorithm {
     abstract protected void insertFrameAtReference(int currentReference, int currentFrame, String[][] frames);
     
 }
+

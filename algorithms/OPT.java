@@ -13,21 +13,26 @@ public class OPT extends PageReplacementAlgorithm{
         boolean exists = alreadyExistInFrame(currentReference, frames);
         int prevRef = currentReference-1;
 
-        if(exists){ 
+        if(exists){
+        	updateHit(true);//
             for(int i=0; i<frameLen; i++){
                 String curVal = frames[prevRef][i];
                 if(curVal==null)
                     break;
-                if(curVal.equals(values[currentReference]))
-                    this.currentFrame = i;
+                 if(curVal.equals(values[currentReference])){
+                 	executingFrame = currentFrame;// check validity
+                 	this.currentFrame = i;
+                 }
                 frames[currentReference][i] = curVal;
             }
         }else{
+        	updateHit(false);//
             if(!isFrameFull(prevRef, frames)){
                 for(int i=0; i<frameLen; i++){
                     String curVal = frames[prevRef][i];
                     if(curVal==null){
                         pageFault(currentReference, frames, i);
+                        executingFrame =currentFrame;
                         this.currentFrame = i;
                         break;
                     }
@@ -38,10 +43,11 @@ public class OPT extends PageReplacementAlgorithm{
                 for(int i=0; i<frameLen; i++){
                     if(i==vicIdx){
                         pageFault(currentReference, frames, i);
+                        executingFrame = currentFrame;
                         this.currentFrame = i;
                         continue;
                     }
-                    frames[currentReference][i] = frames[prevRef][i];       
+                    frames[currentReference][i] = frames[prevRef][i];
                 }
             }
         }
@@ -51,8 +57,7 @@ public class OPT extends PageReplacementAlgorithm{
         int idx = 0;
         int ranker = frameLen;
         int[] refLoc = new int[frameLen];
-        String[] prevFrame = privGetCurrentFrames(prevRef, frameLen, frames);
-
+        String[] prevFrame = privGetCurrentFrames(prevRef, frameLen, frames);	
         for(int i=currentReference; i<refLen; i++){
             String iStringVal = values[i];
             for(int j=0; j<frameLen; j++){
