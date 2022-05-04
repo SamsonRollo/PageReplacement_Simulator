@@ -1,19 +1,14 @@
 package controller;
 
-import algorithms.Algorithm;
-import algorithms.Clock;
-import algorithms.Fifo;
-import algorithms.LRU;
-import algorithms.OPT;
-import algorithms.PageReplacementAlgorithm;
-import exceptions.ErrorReport;
-import exceptions.InvalidInputException;
-import model.PageInput;
+import model.*;
 import ui.AlgorithmPanel;
+import algorithms.*;
+import exceptions.*;
 
 public class PageController{
     private PageInput input;
     private PageReplacementAlgorithm pras;
+    private Thread prasThread;
     
     public PageController(){
     	input = new PageInput();
@@ -55,7 +50,7 @@ public class PageController{
     	}else{ // if(algorithm.equals(Algorithm.CLOCK))
     		pras = new Clock(input);
     	}
-        Thread t = new Thread(new Runnable(){
+        prasThread = new Thread(new Runnable(){
         	public void run(){
         		while(true){
         			if((pras.getCurrentRefernce())==input.getReferenceLength())
@@ -66,18 +61,36 @@ public class PageController{
         			try{
         				Thread.sleep(panel.getSpeed());
         			}catch(Exception e){};			
+                    if(pras.getCurrentRefernce()==input.getReferenceLength()){
+                        panel.setDoneExec(true);
+                        break;
+                    }
         		}
         	}
         });
-        t.start();   	
+        prasThread.start();   	
     }
 
-    public void stopAlgorithm(){
-        //
+
+    @SuppressWarnings("deprecation")
+    public boolean stopAlgorithm(){
+        try{
+            getPRASThread().stop();
+        }catch(Exception e){
+            return false;
+        }
+        return true;
     } 
 
-    public void saveOutput(){
-        //save the graphical output of pr
+    public boolean saveOutput(javax.swing.JPanel panel, String extension){
+        ImageSaver is = new ImageSaver(panel);
+        if(extension.equals("PNG"))
+            is.saveAsImage();
+        else
+            is.saveAsPDF();
+        if(is.getHasError())
+            return false;
+        return true;
 	}
     public PageInput getPageInput(){
         return input;
@@ -153,6 +166,10 @@ public class PageController{
         }catch(Exception e){
             return null;
         }
+    }
+
+    public Thread getPRASThread(){
+        return this.prasThread;
     }
 
     public void setPageInput(PageInput input){

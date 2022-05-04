@@ -4,6 +4,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Graphics;
@@ -14,7 +15,7 @@ import model.PageInput;
 
 public class InputPanel extends JPanel{
 	private FileNameExtensionFilter extF1 = new FileNameExtensionFilter("Page Replacement Simulator file", "prs");
-    private FileNameExtensionFilter extF2 = new FileNameExtensionFilter("Text file", "txt", "text");
+      	private FileNameExtensionFilter extF2 = new FileNameExtensionFilter("Text file", "txt", "text");
     private PRASRadioButton randomRadio, userRadio, fileRadio;
     private PRASTextField userInputText, userInputFrame, userInputRef;
     private PRASButton loadButton;

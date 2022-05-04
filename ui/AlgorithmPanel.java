@@ -10,8 +10,10 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.Hashtable;
+import javax.swing.JOptionPane;
 
 import algorithms.Algorithm;
+import model.PageInput;
 
 public class AlgorithmPanel extends JPanel{
     private static final String PAGE_PATH = "src/page.png";
@@ -101,8 +103,8 @@ public class AlgorithmPanel extends JPanel{
 		});
 	    stopButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				//mainClass.getPageController().stopAlgorithm();
-				setButtonsOnExec(false);
+				if(mainClass.getPageController().stopAlgorithm())
+				    setButtonsOnExec(false);
 			}
 		});
 	    mainMenuButton.addActionListener(new ActionListener(){
@@ -112,8 +114,22 @@ public class AlgorithmPanel extends JPanel{
 		});
         saveButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				mainClass.getPageController().saveOutput();	
-			}
+                Object[] choices = {"PNG", "PDF", "CANCEL"};
+                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+            
+                if((int)selected!=2){
+                    String option = "PNG";
+                    if((int)selected == 1)
+                        option = "PDF"; 
+                    visualPanel.setIsSaving(true);  
+				    boolean ok = mainClass.getPageController().saveOutput(getVisualPanel().getOutputPanel(), option);	
+			         visualPanel.setIsSaving(false);
+                    if(ok)
+                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    else
+                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save", JOptionPane.WARNING_MESSAGE);
+                }
+            }
 		});
 		
 	    setButtonNewState();
@@ -218,15 +234,26 @@ public class AlgorithmPanel extends JPanel{
     public Font getFont(){
     	return font;
     }
+
+    public void setDoneExec(boolean stat){
+        this.doneExec = stat;
+    }
     
     @Override
     public void paintComponent(Graphics g){
     	super.paintComponent(g);
     	g.drawImage(page,0,0,null);
-    	updateUI();
+        if(doneExec){
+            setButtonsOnExec(false);
+            setButtonAfterExec(true);
+            doneExec = false;
+    	}
+        updateUI();
+        
     }
     
     private PRASButton startButton, stopButton, saveButton, mainMenuButton, left, right;
     private JSlider slider;
+    private boolean doneExec = false;
     private Font font = new Font("sans_serif", Font.BOLD, 15);
 }

@@ -10,7 +10,7 @@
 
     import controller.PageController;
     import model.PageInput;
-    
+
     public class VisualPanel extends JPanel{
         private PageController controller;
         public JPanel outputPanel;
@@ -19,6 +19,7 @@
         private BufferedImage f1 = null, f2 =null;
         private final int DRAW_WIDTH = 385;
         private final int DRAW_HEIGHT = 386;
+        private boolean isSavingVal = false;
 
         public VisualPanel(PageController controller, int x, int y, int w, int h, Font font){
             this.controller = controller;
@@ -65,6 +66,14 @@
                         x = startX;
                         y = startY;
 
+                        if(isSaving()){
+                            String refString = java.util.Arrays.toString(input.getReferenceValues());
+                            refString = refString.substring(1,refString.length()-1);
+                            g.drawString("Reference String: "+refString,startX, 20);
+                            g.drawString("No. of Page Frame: "+String.valueOf(input.getFrameLength())
+                                +"          Total Page Fault: "+String.valueOf(controller.getExecCurrentPageFault()),startX, 50);
+                        }
+
                         for(int i = 0; i<input.getReferenceLength(); i++){
                             for(int j = 0; j<input.getFrameLength(); j++){
             
@@ -91,7 +100,7 @@
                             x += 72;
                         }
                     }
-                    setPreferredSize(new Dimension(frameX, frameY));
+                    setPreferredSize(new Dimension(frameX+25, frameY));
                     updateUI();
                 }
             
@@ -105,6 +114,14 @@
             outerDraw.setBounds(5,165,DRAW_WIDTH, DRAW_HEIGHT);
             outerDraw.add(jspDraw);
             return outerDraw;
+        }
+
+        public boolean isSaving(){
+            return this.isSavingVal;
+        }
+
+        public void setIsSaving(boolean stat){
+            this.isSavingVal = stat;
         }
         
         public ValuesPanel getValuePanel(){
