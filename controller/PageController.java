@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 import ui.AlgorithmPanel;
+import ui.MainClass;
 import algorithms.*;
 import exceptions.*;
 
@@ -9,9 +10,11 @@ public class PageController{
     private PageInput input;
     private PageReplacementAlgorithm pras;
     private Thread prasThread;
+    private MainClass mainClass;
     
-    public PageController(){
-    	input = new PageInput();
+    public PageController(MainClass mainClass){
+    	this.mainClass = mainClass;
+        input = new PageInput();
     }
 
     public PageInput setThruRandom(){ //create randomInput obejct
@@ -25,7 +28,7 @@ public class PageController{
         try{
             input.setValues(refLen, frameLen, refValues);
         }catch(InvalidInputException iie){
-            new ErrorReport(iie.getMessage(), "Invalid Inputs");
+            new ErrorReport(mainClass, iie.getMessage(), "Invalid Inputs");
         }
         return input;
     }
@@ -35,7 +38,7 @@ public class PageController{
         try{
             input.getFromFileInput(file);
         }catch(InvalidInputException iie){
-            new ErrorReport(iie.getMessage(), "Invalid Inputs");
+            new ErrorReport(mainClass, iie.getMessage(), "Invalid Inputs");
         }
         return input;
     }

@@ -13,7 +13,6 @@ import java.util.Hashtable;
 import javax.swing.JOptionPane;
 
 import algorithms.Algorithm;
-import model.PageInput;
 
 public class AlgorithmPanel extends JPanel{
     private static final String PAGE_PATH = "src/page.png";
@@ -24,7 +23,6 @@ public class AlgorithmPanel extends JPanel{
     private ImagePanel aboutPanel;
     private InputPanel inputPanel;
     private VisualPanel visualPanel;
-    private ValuesPanel valPanel;
 
     public AlgorithmPanel(Dimension d, MainClass mainClass){
     	this.mainClass = mainClass;
@@ -97,14 +95,17 @@ public class AlgorithmPanel extends JPanel{
                             
         startButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
+                visualPanel.setIsExecuting(true);
 				mainClass.getPageController().startAlgorithm(currentAlgorithm, getAlgoPanel());
 				setButtonsOnExec(true);
 			}
 		});
 	    stopButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				if(mainClass.getPageController().stopAlgorithm())
+				if(mainClass.getPageController().stopAlgorithm()){
+                    visualPanel.setIsExecuting(false);
 				    setButtonsOnExec(false);
+                }
 			}
 		});
 	    mainMenuButton.addActionListener(new ActionListener(){
@@ -115,7 +116,7 @@ public class AlgorithmPanel extends JPanel{
         saveButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
                 Object[] choices = {"PNG", "PDF", "CANCEL"};
-                Object selected = JOptionPane.showOptionDialog(null, "Select format to save.", "Save", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
+                Object selected = JOptionPane.showOptionDialog(mainClass, "Select format to save.", "Save", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]);
             
                 if((int)selected!=2){
                     String option = "PNG";
@@ -125,9 +126,9 @@ public class AlgorithmPanel extends JPanel{
 				    boolean ok = mainClass.getPageController().saveOutput(getVisualPanel().getOutputPanel(), option);	
 			         visualPanel.setIsSaving(false);
                     if(ok)
-                        JOptionPane.showMessageDialog(null, "Saved successfully.", "Save", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(mainClass, "Saved successfully.", "Save", JOptionPane.INFORMATION_MESSAGE);
                     else
-                        JOptionPane.showMessageDialog(null, "Cannot save at the moment.", "Save", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(mainClass, "Cannot save at the moment.", "Save", JOptionPane.WARNING_MESSAGE);
                 }
             }
 		});
@@ -158,6 +159,7 @@ public class AlgorithmPanel extends JPanel{
             public void actionPerformed(ActionEvent e){
             	updateAboutAlgo(currentAlgorithm.previous());
                 mainClass.getPageController().setPRAStoNull();
+                setButtonAfterExec(false);
             	repaintAlgorithms();
             }
         });
@@ -165,6 +167,7 @@ public class AlgorithmPanel extends JPanel{
             public void actionPerformed(ActionEvent e){
             	updateAboutAlgo(currentAlgorithm.next());
                 mainClass.getPageController().setPRAStoNull();
+                setButtonAfterExec(false);
             	repaintAlgorithms();
             }
         });
@@ -184,7 +187,6 @@ public class AlgorithmPanel extends JPanel{
     
     public void setLabelsOnScreen(){
     	add(loadVisualPanel());
-    	valPanel = visualPanel.getValuePanel();
     }
     
     public void setButtonNewState(){ //new state
@@ -195,6 +197,7 @@ public class AlgorithmPanel extends JPanel{
     }
     
     public void setButtonOnLoad(){ //loaded the input
+        saveButton.setEnabled(false);
     	startButton.setEnabled(true);
     	slider.setEnabled(true);
     }
@@ -244,6 +247,7 @@ public class AlgorithmPanel extends JPanel{
     	super.paintComponent(g);
     	g.drawImage(page,0,0,null);
         if(doneExec){
+            visualPanel.setIsExecuting(false);
             setButtonsOnExec(false);
             setButtonAfterExec(true);
             doneExec = false;

@@ -30,7 +30,6 @@ public class PageInput{
     public void setValues(String refLenStr, String frameLenStr, String refValues) throws InvalidInputException{
         int refLen, frameLen;
         hasError = false;
-        
         try{
             refLen = Integer.parseInt(refLenStr);
             frameLen = Integer.parseInt(frameLenStr);
@@ -78,7 +77,8 @@ public class PageInput{
             String line;
 
             while((line = reader.readLine())!= null){
-                line.toLowerCase().replaceAll(" ", "");
+                line = line.toLowerCase().replaceAll(" ", "");
+
                 if(line.startsWith("referencestring:"))
                     refString = line.split(":")[1]; //unsafe
                 if(line.startsWith("framesize:")){
@@ -92,9 +92,9 @@ public class PageInput{
             }
             reader.close();
             setValues(refLenFunc(refString), frameLen, refString);
-        }catch(InvalidInputException iie){
+        }catch(Exception iie){
         	hasError = true;
-            throw new InvalidInputException("Cannot access input file!");
+            throw new InvalidInputException("Cannot access input file!"+"\n"+iie.getMessage());
         }
     }
     
@@ -124,7 +124,7 @@ public class PageInput{
     }
     
     private String refLenFunc(String refString){
-        return String.valueOf(refString.split(",").length);
+        return String.valueOf(refString.split(",|-").length);
     }
 
     private void generateRefValues(){

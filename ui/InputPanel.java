@@ -4,7 +4,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.image.BufferedImage;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Graphics;
@@ -82,7 +81,7 @@ public class InputPanel extends JPanel{
       					jf.addChoosableFileFilter(extF1);
       					jf.addChoosableFileFilter(extF2);
       
-        				if(jf.showOpenDialog(null)==JFileChooser.APPROVE_OPTION){
+        				if(jf.showOpenDialog(mainClass)==JFileChooser.APPROVE_OPTION){
         					try{
 							input = mainClass.getPageController().setThruFileInput(jf.getSelectedFile());
         					}catch(Exception ex){};

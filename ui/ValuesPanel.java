@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.Font;
 import java.awt.Color;
 
-import controller.PageController;;
+import controller.PageController;
 
 public class ValuesPanel extends JPanel{
 	private PageController controller;

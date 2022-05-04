@@ -47,7 +47,9 @@ public class MainMenuPanel extends JPanel{
             });
         aboutButton.addActionListener(new ActionListener(){
                 public void actionPerformed(ActionEvent e){
-                    //add pop up for this about the app
+                    AboutPanel ap =  new AboutPanel();
+                    ap.setAbout();
+                    javax.swing.JOptionPane.showMessageDialog(mainClass, ap, "HELP", javax.swing.JOptionPane.PLAIN_MESSAGE);
                 }
             });
         exitButton.addActionListener(new ActionListener(){

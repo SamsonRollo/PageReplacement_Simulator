@@ -1,6 +1,6 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "itext.jar"
+        "itextpdf-5.4.0.jar"
     ]
 }

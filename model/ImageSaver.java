@@ -12,7 +12,10 @@ import java.awt.Graphics2D;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfTemplate;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.awt.PdfGraphics2D;
+import com.itextpdf.text.Rectangle;
 
 public class ImageSaver{
 	private JPanel panel;
@@ -36,27 +39,19 @@ public class ImageSaver{
 	}
 
 	public void saveAsPDF(){
-		Document document = new Document();
+		Rectangle pageSize = new Rectangle(0,panel.getHeight(), panel.getWidth(), 0);
+		Document document = new Document(pageSize);
 		try {
-			BufferedImage bi = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			panel.paint(bi.getGraphics());
-
-			int width = bi.getWidth();
-			int height = bi.getHeight();
-
-			// BufferedImage bi2 = new BufferedImage(width,height,bi.getType());
-			// Graphics2D graphics2D = bi2.createGraphics();
-   //  		graphics2D.translate((height - width) / 2, (height - width) / 2);
- 		//     graphics2D.rotate(Math.PI / 2, height / 2, width / 2);
-   //  		graphics2D.drawRenderedImage(bi, null);
-
 		    PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(getFileName()+".pdf")));
 		    document.open();
 		    
-		    Image itImage = Image.getInstance(writer, bi, 1);
-		    itImage.setAbsolutePosition(50, 50);
-            itImage.scalePercent(25);
-            document.add(itImage);
+		    PdfContentByte contentByte = writer.getDirectContent();
+		    
+	    	PdfTemplate template = contentByte.createTemplate(panel.getWidth(),panel.getHeight());
+		    Graphics2D g2 = new PdfGraphics2D(template, panel.getWidth(),panel.getHeight());
+			panel.print(g2);
+			g2.dispose();
+			contentByte.addTemplate(template, 0,0);
 
 		} catch (Exception e) {
 		    hasError = true;
@@ -77,11 +72,4 @@ public class ImageSaver{
 	public boolean getHasError(){
 		return this.hasError;
 	}
-
-	// PdfContentByte contentByte = writer.getDirectContent();
-	// 	    PdfTemplate template = contentByte.createTemplate(500, 500);
-	// 	    Graphics2D g2 = template.createGraphics(500, 500);
-	// 	    panel.print(g2);
-	// 	    g2.dispose();
-	// 	    contentByte.addTemplate(template, 30, 300);
 }

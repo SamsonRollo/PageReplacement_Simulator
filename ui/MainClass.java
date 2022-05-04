@@ -30,7 +30,7 @@ public class MainClass extends JFrame{ //rename to PRAS
 	}
 
 	private void loadMainMenu(){
-		pageController = new PageController();
+		pageController = new PageController(this);
 		mainMenuPanel = new MainMenuPanel(new Dimension(COVER_WIDTH, COVER_HEIGHT), this);
 		card = new CardLayout();
 		activePanel = new JPanel(card);
