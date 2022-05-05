@@ -11,14 +11,14 @@ public abstract class PageReplacementAlgorithm {
     public int pageFaults;
     public boolean hit = false;
     public String[][] frames;
-    public boolean[] hitBoolean;
+    public int[][] hitBoolean;
 
     public void setValues(PageInput input){
         values = input.getReferenceValues();
         frameLen = input.getFrameLength();
         refLen = input.getReferenceLength();
         frames = new String[refLen][frameLen];
-        hitBoolean = new boolean[refLen];
+        hitBoolean = new int[refLen][2];
         currentReference = 0;
         currentFrame = -1;
         pageFaults = 0;
@@ -33,7 +33,8 @@ public abstract class PageReplacementAlgorithm {
         }else{
             insertFrameAtReference(currentReference, currentFrame, frames);
         }
-        hitBoolean[currentReference] = hit;
+        hitBoolean[currentReference][0] = currentFrame;
+        hitBoolean[currentReference][1] = hit ? 1:0;
         executingRef = currentReference;
         this.currentReference++;
     }
@@ -88,7 +89,7 @@ public abstract class PageReplacementAlgorithm {
         return this.currentFrame;
     }
 
-    public boolean[] getHitArray(){
+    public int[][] getHitArray(){
         return this.hitBoolean;
     }
 

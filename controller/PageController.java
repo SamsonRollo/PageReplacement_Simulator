@@ -163,7 +163,7 @@ public class PageController{
         }
     }
 
-    public boolean[] getPRASBolArr(){
+    public int[][] getPRASBolArr(){
         try{
             return pras.getHitArray();
         }catch(Exception e){

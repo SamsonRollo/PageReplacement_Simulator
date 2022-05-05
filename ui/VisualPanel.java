@@ -9,9 +9,11 @@
     import java.awt.Font;
     import java.awt.Color;
     import java.awt.Point;
+    import java.awt.Rectangle;
 
     import controller.PageController;
-    import model.PageInput;;
+    import model.PageInput;
+
 
     public class VisualPanel extends JPanel{
         private PageController controller;
@@ -19,7 +21,7 @@
         public JScrollPane jspDraw;
         public ValuesPanel valPanel;
         private Font font;
-        private BufferedImage f1 = null, f2 =null;
+        private BufferedImage f1 = null, f2 =null, f3 =null, f4=null;
         private final int DRAW_WIDTH = 385;
         private final int DRAW_HEIGHT = 386;
         private boolean isSavingVal = false;
@@ -45,6 +47,10 @@
             f1 = imgLoader.getBuffImage();
             imgLoader.reloadImage("src/frame2.png", "frame2");
             f2 = imgLoader.getBuffImage();
+            imgLoader.reloadImage("src/frame3.png", "frame3");
+            f3 = imgLoader.getBuffImage();
+            imgLoader.reloadImage("src/frame4.png", "frame4");
+            f4 = imgLoader.getBuffImage();
             imgLoader = null;
             outputPanel = new JPanel(null){
                 @Override
@@ -57,7 +63,7 @@
 
                     if(input!=null){
                         String[][] frames = controller.getPRASFrames();
-                        boolean[] hitArr = controller.getPRASBolArr();
+                        int[][] hitArr = controller.getPRASBolArr();
                         int startX = 25, x, y, startY = 65;
 
                         frameY = input.getFrameLength()*27;
@@ -80,8 +86,12 @@
 
                         for(int i = 0; i<input.getReferenceLength(); i++){
                             for(int j = 0; j<input.getFrameLength(); j++){
-            
-                                if((j+i)%2==0)
+                                
+                                if(hitArr!=null && i<=controller.getExecCurrentReference() && hitArr[i][1]==1 && hitArr[i][0]==j )
+                                    g.drawImage(f3, x,y, null);
+                                else if(hitArr!=null && i<=controller.getExecCurrentReference() && hitArr[i][1]==0 && hitArr[i][0]==j)
+                                    g.drawImage(f4, x, y, null);
+                                else if((j+i)%2==0)
                                     g.drawImage(f1, x, y,null);
                                 else
                                     g.drawImage(f2, x, y,null);
@@ -100,7 +110,7 @@
                             if(hitArr!=null && i<=controller.getExecCurrentReference()){
                                     g.setColor(Color.green);
                                     String hit = "Hit";
-                                    if(!hitArr[i]){
+                                    if(hitArr[i][1]==0){
                                         g.setColor(Color.red);
                                         hit = "Miss";
                                     }
