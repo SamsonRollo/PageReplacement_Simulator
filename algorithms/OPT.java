@@ -10,7 +10,8 @@ public class OPT extends PageReplacementAlgorithm{
 
     @Override
     protected void insertFrameAtReference(int currentReference, int currentFrame, String[][] frames) {
-        boolean exists = alreadyExistInFrame(currentReference, frames);
+        int idx = alreadyExistInFrame(currentReference, frames);
+        boolean exists = (idx==-1) ? false : true;
         int prevRef = currentReference-1;
 
         if(exists){
@@ -20,9 +21,10 @@ public class OPT extends PageReplacementAlgorithm{
                 if(curVal==null)
                     break;
                  if(curVal.equals(values[currentReference])){
-                 	executingFrame = currentFrame;// check validity
+                 	executingFrame = currentFrame;// check validity for step by step
                  	this.currentFrame = i;
                  }
+                 setExecutingFrame(idx);
                 frames[currentReference][i] = curVal;
             }
         }else{
@@ -32,8 +34,8 @@ public class OPT extends PageReplacementAlgorithm{
                     String curVal = frames[prevRef][i];
                     if(curVal==null){
                         pageFault(currentReference, frames, i);
-                        executingFrame =currentFrame;
                         this.currentFrame = i;
+                        this.executingFrame = i;
                         break;
                     }
                     frames[currentReference][i] = curVal;
@@ -43,8 +45,8 @@ public class OPT extends PageReplacementAlgorithm{
                 for(int i=0; i<frameLen; i++){
                     if(i==vicIdx){
                         pageFault(currentReference, frames, i);
-                        executingFrame = currentFrame;
                         this.currentFrame = i;
+                        this.executingFrame = i;
                         continue;
                     }
                     frames[currentReference][i] = frames[prevRef][i];

@@ -19,6 +19,7 @@ public class LRU extends PageReplacementAlgorithm{
         String currentVal = String.valueOf(values[currentReference]);
         if(currentFrameArr.size()==0)
             currentFrameArr.add(0, String.valueOf(values[prevRef]));
+
         if(currentFrameArr.contains(currentVal)){
         	updateHit(true);//
             rearrangeFrame(currentFrameArr, currentVal, currentVal); ///if full and not
@@ -36,22 +37,27 @@ public class LRU extends PageReplacementAlgorithm{
     }
 
     private void lRUPageFault(boolean pagefault, int currentFrame){
-        if(pagefault)
+        if(pagefault){
             this.pageFaults++;
-        executingFrame = currentFrame;
+        }else{
+        	this.executingFrame = currentFrame;
+        }
         this.currentFrame = currentFrame;
     }
 
     private String[][] produceNextFrame(String[][] frames, int prevRef, int currentReference, boolean pagefault, int vicIdx, String currentVal){
         for(int i=0; i<frameLen; i++){
             if(frames[prevRef][i]==null){
-             	if(pagefault && vicIdx==-1) //if does not exist and frame not full
+             	if(pagefault && vicIdx==-1){ //if does not exist and frame not full
              	   frames[currentReference][i] = currentVal;
+             	   this.executingFrame = i;
+             	 }
                 break;
             }
-            if(pagefault && i==vicIdx)//if full and there is a victim
+            if(pagefault && i==vicIdx){//if full and there is a victim
                 frames[currentReference][i] = currentVal;
-            else
+            	this.executingFrame = i;
+            }else
                 frames[currentReference][i] = frames[prevRef][i];
         }
         return frames;

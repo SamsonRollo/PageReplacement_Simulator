@@ -17,7 +17,9 @@ public class Clock extends PageReplacementAlgorithm{
     @Override
     protected void insertFrameAtReference(int currentReference, int currentFrame, String[][] frames){
         int prevRef = currentReference-1;
-        boolean exist = alreadyExistInFrame(currentReference, frames);
+        int idx = alreadyExistInFrame(currentReference, frames);
+        boolean exist = (idx==-1) ? false : true;
+
         for(int i=0; i<frameLen; i++){
             if(!exist && i==(currentFrame+1)%frameLen){
             		if(secondChance[i]){
@@ -31,6 +33,8 @@ public class Clock extends PageReplacementAlgorithm{
             			pageFault(currentReference, frames, i);
             		}
             }else{ //if current value exists
+            	if(exist)
+            		setExecutingFrame(idx);
                 frames[currentReference][i] = frames[prevRef][i];
             }
         }
@@ -42,16 +46,16 @@ public class Clock extends PageReplacementAlgorithm{
     } 
 
     @Override
-    protected boolean alreadyExistInFrame(int currentReference, String[][] frames){
+    protected int alreadyExistInFrame(int currentReference, String[][] frames){
         int prevRef = currentReference-1;
         for(int i=0; i<frameLen; i++){
             if(frames[prevRef][i]==null) //safety catch for null
                 break;
             if((frames[prevRef][i]).equals(values[currentReference])){
                 secondChance[i] = true;
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 }
